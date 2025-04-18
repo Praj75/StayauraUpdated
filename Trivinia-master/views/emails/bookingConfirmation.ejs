@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #FF385C;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+        }
+        .booking-details {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FF385C;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Booking Confirmation</h1>
+    </div>
+    <div class="content">
+        <p>Dear <%= guestName %>,</p>
+        <p>Thank you for booking with DART! Your booking has been confirmed.</p>
+        
+        <div class="booking-details">
+            <h2>Booking Details</h2>
+            <div class="detail-row">
+                <span class="detail-label">Property</span>
+                <span class="detail-value"><%= listingTitle %></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Check-in</span>
+                <span class="detail-value"><%= new Date(checkIn).toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                }) %></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Check-out</span>
+                <span class="detail-value"><%= new Date(checkOut).toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                }) %></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Amount Paid</span>
+                <span class="detail-value">₹<%= (totalPrice/100).toLocaleString("en-IN") %></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Booking ID</span>
+                <span class="detail-value"><%= bookingId || 'Not available' %></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Order ID</span>
+                <span class="detail-value"><%= orderId || 'Not available' %></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Payment ID</span>
+                <span class="detail-value"><%= paymentId || 'Not available' %></span>
+            </div>
+        </div>
+
+        <div class="important-info">
+            <p>Please save these details for future reference:</p>
+            <ul>
+                <li>Booking ID: <%= bookingId || 'Not available' %></li>
+                <li>Order ID: <%= orderId || 'Not available' %></li>
+                <li>Payment ID: <%= paymentId || 'Not available' %></li>
+            </ul>
+        </div>
+
+        <p>Need to make changes to your booking? Please contact us with your Booking ID.</p>
+        
+        <div class="footer">
+            <p>Thank you for choosing DART!</p>
+            <p>© <%= new Date().getFullYear() %> DART. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 

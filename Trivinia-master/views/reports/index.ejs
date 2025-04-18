@@ -1,0 +1,200 @@
+<%- layout('layouts/boilerplate') %>
+<% title = 'Reports' %>
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Reports</h2>
+            <p class="text-muted">View and manage all reports</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/reports/new" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Report
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form action="/reports" method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label for="type" class="form-label">Type</label>
+                    <select class="form-select" id="type" name="type">
+                        <option value="">All Types</option>
+                        <option value="Maintenance" <%= type === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+                        <option value="Safety" <%= type === 'Safety' ? 'selected' : '' %>>Safety</option>
+                        <option value="Noise" <%= type === 'Noise' ? 'selected' : '' %>>Noise</option>
+                        <option value="Other" <%= type === 'Other' ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">All Statuses</option>
+                        <option value="Pending" <%= status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                        <option value="In Progress" <%= status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                        <option value="Resolved" <%= status === 'Resolved' ? 'selected' : '' %>>Resolved</option>
+                        <option value="Closed" <%= status === 'Closed' ? 'selected' : '' %>>Closed</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select class="form-select" id="priority" name="priority">
+                        <option value="">All Priorities</option>
+                        <option value="Low" <%= priority === 'Low' ? 'selected' : '' %>>Low</option>
+                        <option value="Medium" <%= priority === 'Medium' ? 'selected' : '' %>>Medium</option>
+                        <option value="High" <%= priority === 'High' ? 'selected' : '' %>>High</option>
+                        <option value="Urgent" <%= priority === 'Urgent' ? 'selected' : '' %>>Urgent</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reports List -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <% if (reports.length === 0) { %>
+                <div class="text-center py-5">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <h4>No Reports Found</h4>
+                    <p class="text-muted">There are no reports matching your criteria.</p>
+                    <a href="/reports/new" class="btn btn-primary">Create New Report</a>
+                </div>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% reports.forEach(report => { %>
+                                <tr>
+                                    <td><%= report._id.toString().slice(-6) %></td>
+                                    <td>
+                                        <span class="badge bg-info"><%= report.type %></span>
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;">
+                                            <%= report.description %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <% const priorityClasses = {
+                                            'Low': 'bg-success',
+                                            'Medium': 'bg-warning',
+                                            'High': 'bg-danger',
+                                            'Urgent': 'bg-dark'
+                                        } %>
+                                        <span class="badge <%= priorityClasses[report.priority] %>">
+                                            <%= report.priority %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <% const statusClasses = {
+                                            'Pending': 'bg-secondary',
+                                            'In Progress': 'bg-primary',
+                                            'Resolved': 'bg-success',
+                                            'Closed': 'bg-dark'
+                                        } %>
+                                        <span class="badge <%= statusClasses[report.status] %>">
+                                            <%= report.status %>
+                                        </span>
+                                    </td>
+                                    <td><%= new Date(report.createdAt).toLocaleDateString() %></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="/reports/<%= report._id %>" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <% if (report.status !== 'Closed') { %>
+                                                <a href="/reports/<%= report._id %>/edit" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            <% } %>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (totalPages > 1) { %>
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <%= page === 1 ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= page - 1 %>&type=<%= type %>&status=<%= status %>&priority=<%= priority %>">Previous</a>
+                            </li>
+                            <% for(let i = 1; i <= totalPages; i++) { %>
+                                <li class="page-item <%= page === i ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&type=<%= type %>&status=<%= status %>&priority=<%= priority %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                            <li class="page-item <%= page === totalPages ? 'disabled' : '' %>">
+                                <a class="page-link" href="?page=<%= page + 1 %>&type=<%= type %>&status=<%= status %>&priority=<%= priority %>">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    border: none;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+}
+
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.pagination {
+    margin-bottom: 0;
+}
+
+.page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    color: #0d6efd;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+}
+</style> 

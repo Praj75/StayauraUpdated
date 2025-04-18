@@ -1,0 +1,202 @@
+<!-- Flash container for messages -->
+<div id="flash-container"></div>
+
+<script>
+    // The flash.js file will handle all flash messages
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const bookingForm = document.getElementById('booking-form');
+        const payNowBtn = document.getElementById('pay-now');
+        const startDateInput = document.getElementById('checkIn');
+        const endDateInput = document.getElementById('checkOut');
+        const guestsInput = document.getElementById('guests');
+        const basePrice = Number('<%= listing.price %>');
+        const bookedDates = JSON.parse('<%- JSON.stringify(listing.bookedDates) %>');
+
+        // Function to check if a date is available
+        function isDateAvailable(date) {
+            const checkDate = new Date(date);
+            return !bookedDates.some(booking => {
+                const checkIn = new Date(booking.checkIn);
+                const checkOut = new Date(booking.checkOut);
+                return checkDate >= checkIn && checkDate <= checkOut;
+            });
+        }
+
+        function calculateTotalPrice(nights) {
+            const total = basePrice * nights;
+            
+            // Update the displayed price details
+            document.getElementById('total-amount').textContent = `₹${total.toLocaleString('en-IN')}`;
+            document.querySelector('.price-details').style.display = 'block';
+            
+            return total;
+        }
+
+        function calculateNights(checkIn, checkOut) {
+            const start = new Date(checkIn);
+            const end = new Date(checkOut);
+            const diffTime = Math.abs(end - start);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        async function initializePayment() {
+            const checkIn = startDateInput.value;
+            const checkOut = endDateInput.value;
+            const guests = Number(guestsInput.value);
+            const nights = calculateNights(checkIn, checkOut);
+            const totalPrice = calculateTotalPrice(nights);
+
+            // Generate unique booking ID
+            const timestamp = Date.now();
+            const randomString = Math.random().toString(36).substring(2, 8);
+            const bookingId = `DART-${timestamp}-${randomString}`;
+
+            try {
+                // Create order first
+                const response = await fetch('/payment/create_order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        listingId: '<%= listing._id %>',
+                        checkIn: checkIn,
+                        checkOut: checkOut,
+                        guests: guests,
+                        totalPrice: totalPrice
+                    })
+                });
+
+                const orderData = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(orderData.error || 'Failed to create order');
+                }
+
+                // Get the Razorpay key
+                const keyResponse = await fetch('/payment/getRazorPayKey');
+                const keyData = await keyResponse.json();
+                
+                const options = {
+                    key: keyData.key,
+                    amount: orderData.amount,
+                    currency: 'INR',
+                    name: '<%= listing.title %>',
+                    description: `Booking for ${nights} nights`,
+                    image: '<%= listing.images && listing.images.length > 0 ? listing.images[0].url : "/logo3.png" %>',
+                    order_id: orderData.id,
+                    handler: function(response) {
+                        console.log('Payment response:', response);
+                        
+                        // For mock payments, we'll get a simplified response
+                        const paymentId = response.razorpay_payment_id || `mock_${Date.now()}`;
+                        const orderId = response.razorpay_order_id || orderData.id;
+                        const signature = response.razorpay_signature || `mock_sig_${Date.now()}`;
+
+                        // Create URL parameters
+                        const params = new URLSearchParams({
+                            listingId: '<%= listing._id %>',
+                            checkIn: checkIn,
+                            checkOut: checkOut,
+                            guests: guests,
+                            paymentId: paymentId,
+                            orderId: orderId,
+                            signature: signature,
+                            amount: totalPrice,
+                            paymentMode: 'razorpay',
+                            author: '<%= currUser._id %>',
+                            bookingId: bookingId,
+                            email: '<%= currUser ? currUser.email : "" %>',
+                            name: '<%= currUser ? currUser.username : "" %>',
+                            status: 'confirmed'
+                        });
+
+                        // Log the parameters for debugging
+                        console.log('Payment success URL parameters:', Object.fromEntries(params));
+
+                        window.location.href = `/payment/paymentSuccess?${params.toString()}`;
+                    },
+                    prefill: {
+                        name: '<%= currUser ? currUser.username : "" %>',
+                        email: '<%= currUser ? currUser.email : "" %>'
+                    },
+                    theme: {
+                        color: '#F37254'
+                    },
+                    modal: {
+                        ondismiss: function() {
+                            payNowBtn.disabled = false;
+                            payNowBtn.textContent = 'Book Now';
+                        }
+                    }
+                };
+
+                // Check if we're using mock payments
+                if (keyData.key.startsWith('mock_')) {
+                    // Simulate a successful payment after a short delay
+                    setTimeout(() => {
+                        options.handler({
+                            razorpay_payment_id: `mock_${Date.now()}`,
+                            razorpay_order_id: orderData.id,
+                            razorpay_signature: `mock_sig_${Date.now()}`
+                        });
+                    }, 1000);
+                } else {
+                    // Use real Razorpay checkout
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+                }
+            } catch (error) {
+                console.error('Payment initialization error:', error);
+                showFlashMessage(error.message || 'Failed to initialize payment', 'error');
+                payNowBtn.disabled = false;
+                payNowBtn.textContent = 'Book Now';
+            }
+        }
+
+        bookingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!startDateInput.value || !endDateInput.value || !guestsInput.value) {
+                showFlashMessage('Please fill in all booking details', 'error');
+                return;
+            }
+            payNowBtn.disabled = true;
+            payNowBtn.textContent = 'Processing...';
+            initializePayment();
+        });
+
+        // Add event listeners to delete buttons
+        const deleteListingBtn = document.querySelector('.delete-listing-btn');
+        if (deleteListingBtn) {
+            deleteListingBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
+                    this.closest('form').submit();
+                }
+            });
+        }
+
+        const deleteReviewBtns = document.querySelectorAll('.delete-review-btn');
+        deleteReviewBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (confirm('Are you sure you want to delete your review?')) {
+                    this.closest('form').submit();
+                }
+            });
+        });
+
+        // Initialize map
+        try {
+            const coordinates = JSON.parse('<%- JSON.stringify(listing.geometry.coordinates) %>');
+            const mapToken = "<%= process.env.MAP_TOKEN %>";
+            initializeMap(coordinates, mapToken);
+        } catch (error) {
+            console.error('Error setting up map:', error);
+            showFlashMessage('Error setting up map', 'error');
+        }
+    });
+</script> 

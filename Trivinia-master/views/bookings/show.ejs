@@ -1,0 +1,122 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div id="alertContainer"></div>
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Booking Details</h2>
+                    <span class="badge <%= booking.status === 'confirmed' ? 'bg-success' : (booking.status === 'cancelled' ? 'bg-danger' : 'bg-warning') %>">
+                        <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h4>Property Details</h4>
+                            <p><strong>Name:</strong> <%= booking.listing.title %></p>
+                            <p><strong>Location:</strong> <%= booking.listing.location %></p>
+                            <% if(booking.listing.images && booking.listing.images.length > 0) { %>
+                                <img src="<%= booking.listing.images[0].url %>" class="img-fluid rounded" alt="Property Image">
+                            <% } %>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Booking Information</h4>
+                            <p><strong>Booking ID:</strong> <%= booking.bookingId %></p>
+                            <p><strong>Check-in:</strong> <%= new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                            <p><strong>Check-out:</strong> <%= new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                            <p><strong>Guests:</strong> <%= booking.guests %></p>
+                            <p><strong>Total Amount:</strong> ₹<%= booking.totalAmount.toLocaleString('en-IN') %></p>
+                            <% if(booking.paymentMode) { %>
+                                <p><strong>Payment Mode:</strong> <%= booking.paymentMode.charAt(0).toUpperCase() + booking.paymentMode.slice(1) %></p>
+                            <% } %>
+                            <% if(booking.paymentStatus) { %>
+                                <p><strong>Payment Status:</strong> <%= booking.paymentStatus.charAt(0).toUpperCase() + booking.paymentStatus.slice(1) %></p>
+                            <% } %>
+                            <% if(booking.refundAmount > 0) { %>
+                                <p><strong>Refund Amount:</strong> ₹<%= booking.refundAmount.toLocaleString('en-IN') %></p>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h4>Contact Information</h4>
+                            <p><strong>Guest Name:</strong> <%= booking.contact.name %></p>
+                            <p><strong>Email:</strong> <%= booking.contact.email %></p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="/bookings" class="btn btn-secondary">Back to Bookings</a>
+                        <% if(booking.status === 'confirmed') { %>
+                            <button class="btn btn-danger" onclick="cancelBooking('<%= booking._id %>')">Cancel Booking</button>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showFlashMessage(message, type = 'success') {
+    const alertContainer = document.getElementById('alertContainer');
+    if (!alertContainer) return;
+
+    // Clear any existing alerts
+    alertContainer.innerHTML = '';
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    alertContainer.appendChild(alertDiv);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+        if (alertDiv && alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 3000);
+}
+
+async function cancelBooking(bookingId) {
+    if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/payment/cancel-booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bookingId })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showFlashMessage('Booking cancelled successfully!', 'success');
+            
+            // Redirect to bookings page after a short delay
+            setTimeout(() => {
+                window.location.href = '/bookings';
+            }, 2000);
+        } else {
+            showFlashMessage(data.error || 'Failed to cancel booking', 'danger');
+        }
+    } catch (error) {
+        console.error('Error cancelling booking:', error);
+        showFlashMessage('Failed to cancel booking. Please try again.', 'danger');
+    }
+}
+</script>
+
+<%- include('../partials/footer') %> 

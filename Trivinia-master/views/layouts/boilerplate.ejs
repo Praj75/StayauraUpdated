@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF token meta tag removed -->
+    <title><%= typeof title !== 'undefined' ? title : 'Stayaura' %></title>
+    <meta name="description" content="Find your perfect stay with Stayaura - Book unique accommodations worldwide">
+    <meta name="keywords" content="stay, aura, listings, travel, accommodation, vacation rental">
+    <meta name="author" content="Stayaura">
+    <meta property="og:title" content="Stayaura - Find your next stay">
+    <meta property="og:description" content="Discover unique accommodations and book your perfect stay with Stayaura">
+    <meta property="og:image" content="/logo3.png">
+    <meta property="og:url" content="https://stayaura.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts - Updated with all requested fonts and weights -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Mapbox -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/rating.css">
+    
+    <!-- Modern UI Theme -->
+    <style>
+        :root {
+            --primary-color: #FF385C;
+            --primary-dark: #E31C5F;
+            --primary-light: #FFE8EC;
+            --secondary-color: #00A699;
+            --secondary-dark: #008489;
+            --secondary-light: #E6F7F6;
+            --dark-color: #222222;
+            --gray-dark: #484848;
+            --gray-medium: #767676;
+            --gray-light: #EBEBEB;
+            --light-color: #F7F7F7;
+            --white: #FFFFFF;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Lato', 'Montserrat', sans-serif;
+            color: var(--dark-color);
+            line-height: 1.6;
+            background-color: var(--white);
+            overflow-x: hidden;
+            font-weight: 400;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', 'Roboto', 'Lato', sans-serif;
+            font-weight: 700;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: var(--radius-full);
+            padding: 0.6rem 1.2rem;
+            font-weight: 700;
+            transition: all var(--transition-normal);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            border-radius: var(--radius-full);
+            padding: 0.6rem 1.2rem;
+            font-weight: 700;
+            transition: all var(--transition-normal);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+            border-color: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        a:hover {
+            color: var(--primary-dark);
+        }
+        
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .card {
+            border-radius: var(--radius-md);
+            border: none;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .container {
+            max-width: 1200px;
+            padding: 0 1.5rem;
+        }
+        
+        .section-padding {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: var(--gray-medium);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+        
+        /* Flash Message Styles */
+        .flash-container {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 600px;
+            animation: slideDown 0.5s ease forwards;
+        }
+        
+        .alert {
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            border: none;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .alert .btn-close {
+            padding: 0.5rem;
+            margin-left: 1rem;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 3rem 0;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .flash-container {
+                top: 70px;
+                width: 95%;
+            }
+        }
+    </style>
+    
+    
+    <%- include('../includes/navbar') %>
+    
+    <main class="container mt-4 flex-grow-1">
+        <%- include('../includes/flash') %>
+        <%- body %>
+    </main>
+    
+    <%- include('../includes/footer') %>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/flash.js"></script>
+    
+    <!-- CSRF Token -->
+    
+    
+    <!-- Additional scripts --
+</body>
+</html>

@@ -1,0 +1,418 @@
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>My Bookings</h1>
+        <p class="text-muted">Manage your upcoming and past stays</p>
+    </div>
+
+    <!-- Upcoming Bookings Section -->
+    <div class="bookings-section">
+        <div class="section-header">
+            <h2>Upcoming Stays</h2>
+            <p class="text-muted"><%= upcomingBookings ? upcomingBookings.length : 0 %> upcoming bookings</p>
+        </div>
+        
+        <div class="bookings-grid">
+            <% if (upcomingBookings && upcomingBookings.length > 0) { %>
+                <% upcomingBookings.forEach(booking => { %>
+                    <div class="booking-card">
+                        <div class="booking-image">
+                            <img src="<%= booking.listing.images[0] || '/images/default-property.jpg' %>" alt="<%= booking.propertyName %>">
+                            <div class="booking-badge">Upcoming</div>
+                        </div>
+                        <div class="booking-content">
+                            <div class="booking-header">
+                                <h3><%= booking.propertyName %></h3>
+                                <span class="booking-status">Confirmed</span>
+                            </div>
+                            <div class="booking-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <div>
+                                        <p class="label">Check-in</p>
+                                        <p class="value"><%= new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></p>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar-times"></i>
+                                    <div>
+                                        <p class="label">Check-out</p>
+                                        <p class="value"><%= new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="booking-footer">
+                                <div class="price">
+                                    <span class="amount"><%= booking.currency %> <%= booking.amount %></span>
+                                    <span class="total">total</span>
+                                </div>
+                                <a href="/listings/<%= booking.listing._id %>" class="view-btn">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>No upcoming stays</h3>
+                    <p>When you book a stay, it will appear here</p>
+                    <a href="/listings" class="explore-btn">Explore Places to Stay</a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Past Bookings Section -->
+    <div class="bookings-section">
+        <div class="section-header">
+            <h2>Past Stays</h2>
+            <p class="text-muted"><%= pastBookings ? pastBookings.length : 0 %> past bookings</p>
+        </div>
+        
+        <div class="bookings-grid">
+            <% if (pastBookings && pastBookings.length > 0) { %>
+                <% pastBookings.forEach(booking => { %>
+                    <div class="booking-card">
+                        <div class="booking-image">
+                            <img src="<%= booking.listing.images[0] || '/images/default-property.jpg' %>" alt="<%= booking.propertyName %>">
+                            <div class="booking-badge completed">Completed</div>
+                        </div>
+                        <div class="booking-content">
+                            <div class="booking-header">
+                                <h3><%= booking.propertyName %></h3>
+                                <span class="booking-status completed">Completed</span>
+                            </div>
+                            <div class="booking-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <div>
+                                        <p class="label">Check-in</p>
+                                        <p class="value"><%= new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></p>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar-times"></i>
+                                    <div>
+                                        <p class="label">Check-out</p>
+                                        <p class="value"><%= new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="booking-footer">
+                                <div class="price">
+                                    <span class="amount"><%= booking.currency %> <%= booking.amount %></span>
+                                    <span class="total">total</span>
+                                </div>
+                                <a href="/listings/<%= booking.listing._id %>" class="view-btn">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <h3>No past stays</h3>
+                    <p>Your completed stays will appear here</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-header {
+        margin-bottom: 3rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .dashboard-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #222;
+        letter-spacing: -0.5px;
+    }
+
+    .dashboard-header p {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .bookings-section {
+        margin-bottom: 4rem;
+        position: relative;
+    }
+
+    .section-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .section-header h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 0;
+        color: #333;
+    }
+
+    .section-header p {
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+    }
+
+    .bookings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .booking-image {
+        height: 220px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .booking-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .booking-card:hover .booking-image img {
+        transform: scale(1.05);
+    }
+
+    .booking-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #FF385C;
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(255, 56, 92, 0.3);
+    }
+
+    .booking-badge.completed {
+        background: #8E8E93;
+        box-shadow: 0 2px 10px rgba(142, 142, 147, 0.3);
+    }
+
+    .booking-content {
+        padding: 1.8rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+
+    .booking-header h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        color: #222;
+        line-height: 1.4;
+    }
+
+    .booking-status {
+        background: #34C759;
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .booking-status.completed {
+        background: #8E8E93;
+    }
+
+    .booking-details {
+        margin-bottom: 1.8rem;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+    }
+
+    .detail-item i {
+        color: #FF385C;
+        margin-right: 1rem;
+        margin-top: 0.25rem;
+        font-size: 1.1rem;
+    }
+
+    .detail-item .label {
+        color: #8E8E93;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .detail-item .value {
+        font-weight: 500;
+        margin: 0;
+        color: #333;
+    }
+
+    .booking-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1.2rem;
+        border-top: 1px solid #E5E5EA;
+        margin-top: auto;
+    }
+
+    .price {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .price .amount {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #222;
+    }
+
+    .price .total {
+        color: #8E8E93;
+        font-size: 0.9rem;
+    }
+
+    .view-btn {
+        background: #FF385C;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .view-btn:hover {
+        background: #E31C5F;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #F9F9F9;
+        border-radius: 16px;
+        grid-column: 1 / -1;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .empty-state i {
+        font-size: 3.5rem;
+        color: #8E8E93;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        color: #333;
+    }
+
+    .empty-state p {
+        color: #666;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    .explore-btn {
+        background: #FF385C;
+        color: white;
+        padding: 0.8rem 1.8rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .explore-btn:hover {
+        background: #E31C5F;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1.5rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .bookings-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .booking-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style> 

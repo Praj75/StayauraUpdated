@@ -1,0 +1,1186 @@
+<% layout('./layouts/boilerplate') %>
+
+<head>
+    <title>Listings</title>
+    <!-- Other meta tags -->
+</head>
+
+<style>
+.hero {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  text-align: center;
+  position: relative;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 10rem 1rem;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -2rem;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: auto;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero h1 {
+  font-size: 4.2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+.hero p {
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.search-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  background: white;
+  padding: 0.6rem;
+  border-radius: 100px;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  max-width: 1000px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.search-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.search-bar input,
+.search-bar select {
+  flex: 1;
+  min-width: 160px;
+  padding: 1rem 1.2rem;
+  border-radius: 50px;
+  border: 1.5px solid #eee;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background-color: white;
+  height: 52px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  cursor: pointer;
+  margin: 0 0.25rem;
+  font-weight: 500;
+  color: #2d3436;
+}
+
+.search-bar select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  padding-right: 2.5rem;
+}
+
+.search-bar input[type="date"] {
+  position: relative;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M20 3h-1V2c0-.6-.4-1-1-1s-1 .4-1 1v1H7V2c0-.6-.4-1-1-1S5 1.4 5 2v1H4C2.9 3 2 3.9 2 5v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z'/%3E%3C/svg%3E");
+}
+
+.search-bar input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z'/%3E%3C/svg%3E");
+}
+
+.search-bar input::placeholder {
+  color: #95a5a6;
+  font-weight: 400;
+}
+
+.search-bar input:focus,
+.search-bar select:focus {
+  outline: none;
+  border-color: #FF385C;
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.1);
+  background-color: white;
+}
+
+.search-bar button {
+  padding: 1rem 2rem;
+  height: 52px;
+  background: linear-gradient(45deg, #FF385C, #E31C5F);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 130px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.3);
+}
+
+.search-bar button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 56, 92, 0.4);
+  background: linear-gradient(45deg, #E31C5F, #FF385C);
+}
+
+.search-bar button i {
+  font-size: 1.1rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 1rem auto;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  background: white;
+}
+
+.filter-btn {
+  background: white;
+  border: 2px solid #eee;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #2d3436;
+}
+
+.filter-btn:hover {
+  border-color: #FF385C;
+  color: #FF385C;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.filter-btn.active {
+  background: linear-gradient(45deg, #FF385C, #E31C5F);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.3);
+}
+
+.properties {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: auto;
+  background-color: transparent;
+}
+
+.listing-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card {
+  border: none;
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover .card-img-container img {
+  transform: scale(1.1);
+}
+
+.card-img-container {
+  position: relative;
+  overflow: hidden;
+  height: 280px;
+  width: 100%;
+  background-color: #f5f5f5;
+  border-radius: 24px 24px 0 0;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+  display: block;
+}
+
+.card-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #FF385C;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  z-index: 2;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.card-save-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #222;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.card-save-btn:hover {
+  transform: scale(1.1);
+  background: #FF385C;
+  color: white;
+}
+
+.card-save-btn.liked {
+  background: #FF385C;
+  color: white;
+}
+
+.card-body {
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background: transparent;
+}
+
+.card-header {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+  background: transparent;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d3436;
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.card-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #636e72;
+  font-size: 1rem;
+  margin: 0.8rem 0;
+}
+
+.card-location i {
+  color: #FF385C;
+  font-size: 0.8rem;
+}
+
+.rating-stars {
+  color: #FF385C;
+  display: flex;
+  align-items: center;
+}
+
+.rating-count {
+  color: #717171;
+  font-size: 0.9rem;
+}
+
+.superhost-badge {
+  background: linear-gradient(45deg, #FF385C, #E31C5F);
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.2);
+  display: inline-block;
+  margin: 0.5rem 0;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 1.2rem;
+  border-top: 1px solid #f5f5f5;
+}
+
+.card-price {
+  font-weight: 700;
+  color: #2d3436;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.card-price small {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #636e72;
+}
+
+.card-reviews {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #636e72;
+}
+
+.card-reviews i {
+  color: #FF385C;
+}
+
+.no-results {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #f9f9f9;
+  border-radius: 16px;
+  margin: 2rem;
+}
+
+.no-results h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.no-results p {
+  color: #717171;
+  font-size: 1.1rem;
+}
+
+.listing-card-wrapper {
+  position: relative;
+}
+
+/* Add styles for image navigation dots */
+.image-dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* Add styles for image navigation arrows */
+.image-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.card:hover .image-nav {
+  opacity: 1;
+}
+
+.prev-image {
+  left: 10px;
+}
+
+.next-image {
+  right: 10px;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: auto;
+    padding: 6rem 1rem;
+    background-attachment: scroll;
+  }
+
+  .hero h1 {
+    font-size: 2.8rem;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    border-radius: 20px;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .search-bar input,
+  .search-bar select,
+  .search-bar button {
+    width: 100%;
+    margin: 0;
+  }
+
+  .filters {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .filter-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .properties {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1rem;
+  }
+
+  .card-img-container {
+    height: 240px;
+  }
+}
+
+/* Add these styles for smooth image transitions */
+.card-img {
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.card-img-container {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  width: 100%;
+  background-color: #f5f5f5;
+  border-radius: 20px 20px 0 0;
+}
+
+/* Update hover effect for better visual feedback */
+.card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Image navigation styles */
+.image-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.card:hover .image-nav {
+  opacity: 1;
+}
+
+.prev-image {
+  left: 10px;
+}
+
+.next-image {
+  right: 10px;
+}
+
+.image-dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 3;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* Glass Button Styles */
+.glass-btn {
+  position: relative;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.glass-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.glass-btn:active {
+  transform: translateY(1px);
+}
+
+.new-listing-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(46, 213, 115, 0.2),
+    rgba(46, 213, 115, 0.1)
+  );
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+.new-listing-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(46, 213, 115, 0.3),
+    rgba(46, 213, 115, 0.2)
+  );
+}
+</style>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>Find your next stay</h1>
+    <p>Discover unique places to stay and experiences hosted by locals around the world</p>
+    <form id="search-form" class="search-bar">
+      <select id="location" name="location" required>
+        <option value="" selected disabled>Where are you going?</option>
+        <option value="India">India</option>
+        <option value="Asia">Asia</option>
+        <option value="Europe">Europe</option>
+        <option value="USA">USA</option>
+      </select>
+      <input type="date" id="checkIn" name="checkIn" placeholder="Check-in" required>
+      <input type="date" id="checkOut" name="checkOut" placeholder="Check-out" required>
+      <input type="number" id="guests" name="guests" placeholder="Guests" min="1" max="10" required>
+      <button type="submit">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">✨ All</button>
+  <button class="filter-btn" data-filter="beach">🏖 Beach</button>
+  <button class="filter-btn" data-filter="mountain">🏔 Mountain</button>
+  <button class="filter-btn" data-filter="city">🏙 City</button>
+  <button class="filter-btn" data-filter="lake">🌊 Lake</button>
+  <button class="filter-btn" data-filter="trending">🔥 Trending</button>
+  <button class="filter-btn" data-filter="countryside">🌳 Countryside</button>
+  <button class="filter-btn" data-filter="mansion">🏰 Mansion</button>
+</div>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>All Listings</h1>
+        <a href="/listings/new" class="glass-btn new-listing-btn">
+            <i class="fas fa-plus me-1"></i> New Listing
+        </a>
+    </div>
+</div>
+
+<div class="properties" id="listings-container">
+  <% 
+  // Check if user exists and get their wishlist for efficient checking
+  let userWishlist = [];
+  if (typeof currUser !== 'undefined' && currUser && Array.isArray(currUser.wishlist)) {
+    userWishlist = currUser.wishlist.map(id => id.toString()); // Convert ObjectIds to strings for comparison
+  }
+  %>
+
+  <% for(let listing of allListings) { %>
+    <% 
+      const isLiked = userWishlist.includes(listing._id.toString());
+    %>
+    <div class="listing-card-wrapper" data-listing-id="<%= listing._id %>"> <%# Wrapper for easier JS targeting %>
+      <a href="/listings/<%= listing._id %>" class="listing-link" data-category="<%= listing.category || 'all' %>">
+        <div class="card" data-images='<%= JSON.stringify(listing.images) %>'>
+          <div class="card-img-container">
+            <% 
+            let imageUrl = '/images/default-property.jpg'; // Change default to a proper property placeholder
+            if (listing.images && listing.images.length > 0) {
+                // Skip any images that contain 'logo' in their path
+                const propertyImage = listing.images.find(img => {
+                    const imgPath = typeof img === 'string' ? img : (img.url || '');
+                    return !imgPath.toLowerCase().includes('logo');
+                });
+                
+                if (propertyImage) {
+                    imageUrl = typeof propertyImage === 'string' ? propertyImage : propertyImage.url;
+                }
+            }
+            %>
+            <img src="<%= imageUrl %>" alt="<%= listing.title %>" onerror="this.src='/images/default-property.jpg';" class="card-img">
+            <div class="card-badge"><%= listing.category || 'Standard' %></div>
+            <button class="card-save-btn <%= isLiked ? 'liked' : '' %>" data-listing-id="<%= listing._id %>">
+              <i class="fas <%= isLiked ? 'fa-heart' : 'fa-heart' %>"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="card-header">
+              <h3 class="card-title"><%= listing.title %></h3>
+              <div class="card-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <% 
+                let displayLocation = listing.location;
+                if (listing.city && listing.country) {
+                    displayLocation = `${listing.city}, ${listing.country}`;
+                } else if (listing.city) {
+                    displayLocation = listing.city;
+                }
+                %>
+                <span><%= displayLocation %></span>
+              </div>
+              <% if (listing.superhost) { %><span class="superhost-badge">SUPERHOST</span><% } %>
+              <% if (listing.rating) { %>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem;">
+                  <span class="rating-stars"><i class="fas fa-star"></i></span>
+                  <span class="rating-count"><%= listing.rating %></span>
+                </div>
+              <% } %>
+            </div>
+            <div class="card-footer">
+              <div class="card-price">₹<%= listing.price.toLocaleString("en-IN") %> <small>night</small></div>
+              <div class="card-reviews"><i class="fas fa-star"></i><span><%= listing.reviewsCount || 0 %> reviews</span></div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('search-form');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const listingsContainer = document.getElementById('listings-container');
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+
+    // Set minimum date for check-in and check-out
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.setAttribute('min', today);
+    
+    checkInInput.addEventListener('change', function() {
+        const checkInDate = new Date(this.value);
+        const nextDay = new Date(checkInDate);
+        nextDay.setDate(checkInDate.getDate() + 1);
+        checkOutInput.setAttribute('min', nextDay.toISOString().split('T')[0]);
+        
+        if (checkOutInput.value && new Date(checkOutInput.value) <= checkInDate) {
+            checkOutInput.value = nextDay.toISOString().split('T')[0];
+        }
+    });
+
+    // Check for search parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+    
+    if (searchQuery) {
+        // If there's a search query, perform the search
+        performSearch(searchQuery);
+    }
+
+    // Handle search form submission
+    searchForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const location = document.getElementById('location').value;
+        const checkIn = checkInInput.value;
+        const checkOut = checkOutInput.value;
+
+        try {
+            console.log('Sending search request with:', { location, checkIn, checkOut });
+            const response = await fetch(`/listings/api/search?location=${encodeURIComponent(location)}&checkIn=${checkIn}&checkOut=${checkOut}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Search response:', data);
+            
+            if (data.listings) {
+                updateListings(data.listings);
+            } else {
+                console.error('No listings in response:', data);
+                alert('No listings found matching your criteria.');
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            alert('An error occurred while searching. Please try again.');
+        }
+    });
+
+    // Function to perform search from navbar
+    async function performSearch(searchTerm) {
+        try {
+            console.log('Performing search for:', searchTerm);
+            const response = await fetch(`/listings/api/search?search=${encodeURIComponent(searchTerm)}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Search response:', data);
+            
+            if (data.listings) {
+                updateListings(data.listings);
+                
+                // Update the hero section to show search results
+                const heroContent = document.querySelector('.hero-content');
+                heroContent.innerHTML = `
+                    <h1>Search Results for "${searchTerm}"</h1>
+                    <p>Found ${data.listings.length} listings matching your search</p>
+                `;
+            } else {
+                console.error('No listings in response:', data);
+                alert('No listings found matching your search.');
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            alert('An error occurred while searching. Please try again.');
+        }
+    }
+
+    // Handle filter buttons
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active state
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.dataset.filter;
+            filterListings(filter);
+        });
+    });
+
+    function filterListings(filter) {
+        const listingWrappers = document.querySelectorAll('.listing-card-wrapper');
+        
+        listingWrappers.forEach(wrapper => {
+            const listing = wrapper.querySelector('.listing-link');
+            if (filter === 'all' || listing.dataset.category === filter) {
+                wrapper.style.display = 'block';
+            } else {
+                wrapper.style.display = 'none';
+            }
+        });
+    }
+
+    function updateListings(listings) {
+        if (listings.length === 0) {
+            listingsContainer.innerHTML = `
+                <div class="no-results">
+                    <h3>No listings found matching your criteria</h3>
+                    <p>Try adjusting your search filters or dates</p>
+                </div>
+            `;
+            return;
+        }
+        
+        listingsContainer.innerHTML = listings.map(listing => {
+            let imageUrl = '/images/default-property.jpg';
+            if (listing.images && listing.images.length > 0) {
+                const propertyImage = listing.images.find(img => {
+                    const imgPath = typeof img === 'string' ? img : (img.url || '');
+                    return !imgPath.toLowerCase().includes('logo');
+                });
+                
+                if (propertyImage) {
+                    imageUrl = typeof propertyImage === 'string' ? propertyImage : propertyImage.url;
+                }
+            }
+
+            const displayLocation = listing.city && listing.country ? 
+                `${listing.city}, ${listing.country}` : 
+                (listing.city || listing.location);
+            
+            return `
+            <div class="listing-card-wrapper" data-listing-id="${listing._id}">
+                <a href="/listings/${listing._id}" class="listing-link" data-category="${listing.category || 'all'}">
+                    <div class="card" data-images='${JSON.stringify(listing.images)}'>
+                        <div class="card-img-container">
+                            <img src="${imageUrl}" alt="${listing.title}" onerror="this.src='/images/default-property.jpg';" class="card-img">
+                            <div class="card-badge">${listing.category || 'Standard'}</div>
+                            <button class="card-save-btn ${listing.isLiked ? 'liked' : ''}" data-listing-id="${listing._id}">
+                                <i class="fas ${listing.isLiked ? 'fa-heart' : 'fa-heart'}"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-header">
+                                <h3 class="card-title">${listing.title}</h3>
+                                <div class="card-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${displayLocation}</span>
+                                </div>
+                                ${listing.superhost ? '<span class="superhost-badge">SUPERHOST</span>' : ''}
+                                ${listing.rating ? `
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem;">
+                                        <span class="rating-stars">
+                                            <i class="fas fa-star"></i>
+                                        </span>
+                                        <span class="rating-count">${listing.rating}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="card-footer">
+                                <div class="card-price">₹${listing.price.toLocaleString("en-IN")} <small>night</small></div>
+                                <div class="card-reviews">
+                                    <i class="fas fa-star"></i>
+                                    <span>${listing.reviewsCount || 0} reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            `;
+        }).join('');
+
+        // Reinitialize image cycling for new listings
+        initializeImageCycling();
+    }
+
+    // Separate function to initialize image cycling
+    function initializeImageCycling() {
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const images = JSON.parse(card.dataset.images || '[]');
+            if (images.length <= 1) return;
+            
+            let currentImageIndex = 0;
+            const imgElement = card.querySelector('.card-img');
+            const container = card.querySelector('.card-img-container');
+            
+            // Create dots container
+            const dotsContainer = document.createElement('div');
+            dotsContainer.className = 'image-dots';
+            images.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                dotsContainer.appendChild(dot);
+            });
+            container.appendChild(dotsContainer);
+            
+            // Create navigation arrows
+            const prevButton = document.createElement('div');
+            prevButton.className = 'image-nav prev-image';
+            prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            
+            const nextButton = document.createElement('div');
+            nextButton.className = 'image-nav next-image';
+            nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            
+            container.appendChild(prevButton);
+            container.appendChild(nextButton);
+            
+            // Update active dot
+            function updateDots() {
+                dotsContainer.querySelectorAll('.dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentImageIndex);
+                });
+            }
+            
+            // Change image function
+            function changeImage(direction) {
+                currentImageIndex = (currentImageIndex + direction + images.length) % images.length;
+                const newImage = images[currentImageIndex];
+                const imageUrl = newImage.url || newImage;
+                
+                // Create a new image element to preload
+                const tempImage = new Image();
+                tempImage.onload = function() {
+                    imgElement.src = imageUrl;
+                    updateDots();
+                };
+                tempImage.src = imageUrl;
+            }
+            
+            // Event listeners
+            prevButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                changeImage(-1);
+            });
+            
+            nextButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                changeImage(1);
+            });
+            
+            // Remove auto change on hover - only show navigation on hover
+            card.addEventListener('mouseenter', () => {
+                // Only show navigation if there are multiple images
+                if (images.length > 1) {
+                    prevButton.style.opacity = '1';
+                    nextButton.style.opacity = '1';
+                }
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                prevButton.style.opacity = '0';
+                nextButton.style.opacity = '0';
+            });
+        });
+    }
+
+    // Initialize image cycling for initial page load
+    initializeImageCycling();
+
+    // --- Add Like Button Functionality --- 
+    if (listingsContainer) {
+        listingsContainer.addEventListener('click', async function(event) {
+            const likeButton = event.target.closest('.card-save-btn');
+            
+            if (!likeButton) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const listingId = likeButton.dataset.listingId;
+            const icon = likeButton.querySelector('i');
+
+            // Optimistic UI update
+            const currentlyLiked = likeButton.classList.contains('liked');
+            likeButton.classList.toggle('liked');
+            icon.className = currentlyLiked ? 'far fa-heart' : 'fas fa-heart';
+            
+            try {
+                const response = await fetch(`/listings/${listingId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    // Revert UI on failure
+                    likeButton.classList.toggle('liked');
+                    icon.className = currentlyLiked ? 'fas fa-heart' : 'far fa-heart';
+                    throw new Error('Failed to update wishlist');
+                }
+
+                const result = await response.json();
+                
+                // Update UI based on server response
+                if (result.liked !== !currentlyLiked) {
+                    likeButton.classList.toggle('liked', result.liked);
+                    icon.className = result.liked ? 'fas fa-heart' : 'far fa-heart';
+                }
+
+                // Show success message
+                showFlashMessage(result.liked ? 'Added to wishlist' : 'Removed from wishlist', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showFlashMessage('Failed to update wishlist. Please try again.', 'warning');
+            }
+        });
+    }
+
+    // Flash Message Function
+    function showFlashMessage(message, type = 'info', duration = 3000) {
+        const flashContainer = document.createElement('div');
+        flashContainer.className = 'flash-message';
+        flashContainer.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: ${type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#17a2b8'};
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        `;
+        
+        flashContainer.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(flashContainer);
+        
+        // Show message
+        setTimeout(() => {
+            flashContainer.style.transform = 'translateX(0)';
+        }, 10);
+        
+        // Hide message
+        setTimeout(() => {
+            flashContainer.style.transform = 'translateX(150%)';
+            setTimeout(() => {
+                document.body.removeChild(flashContainer);
+            }, 500);
+        }, duration);
+    }
+});
+</script>

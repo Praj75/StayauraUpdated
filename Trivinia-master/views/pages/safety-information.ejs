@@ -1,0 +1,118 @@
+<%- layout('layouts/boilerplate') %>
+<% title = 'Safety Information' %>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/pages/help-center">Help Center</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Safety Information</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4">Safety Information</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Our Commitment to Safety</h5>
+                    <p class="card-text">At StayAura, your safety is our top priority. We've implemented various measures to ensure a secure and comfortable experience for all our users.</p>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-shield-alt me-2"></i>Verified Profiles</h5>
+                            <p class="card-text">All hosts and guests must verify their identity through our secure verification process.</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Government ID verification</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Phone number verification</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Email verification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-home me-2"></i>Property Standards</h5>
+                            <p class="card-text">All properties must meet our safety and quality standards.</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Safety equipment required</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Regular inspections</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Quality assurance checks</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Safety Guidelines</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="safetyAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    For Guests
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#safetyAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-angle-right me-2"></i>Always communicate through the StayAura platform</li>
+                                        <li><i class="fas fa-angle-right me-2"></i>Read reviews and check host profiles</li>
+                                        <li><i class="fas fa-angle-right me-2"></i>Verify property details and amenities</li>
+                                        <li><i class="fas fa-angle-right me-2"></i>Keep emergency contacts handy</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    For Hosts
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#safetyAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-angle-right me-2"></i>Maintain accurate property listings</li>
+                                        <li><i class="fas fa-angle-right me-2"></i>Provide clear check-in instructions</li>
+                                        <li><i class="fas fa-angle-right me-2"></i>Ensure safety equipment is up to date</li>
+                                        <li><i class="fas fa-angle-right me-2"></i>Respond promptly to guest concerns</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Emergency Support</h5>
+                    <p class="card-text">Our 24/7 support team is always available to assist you in case of emergencies.</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-danger">Emergency Contact</a>
+                        <a href="#" class="btn btn-outline-secondary">Report an Issue</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h4>Related Pages</h4>
+                <div class="list-group">
+                    <a href="/pages/help-center" class="list-group-item list-group-item-action">Help Center</a>
+                    <a href="/pages/report-a-concern" class="list-group-item list-group-item-action">Report a Concern</a>
+                    <a href="/pages/trust-and-safety" class="list-group-item list-group-item-action">Trust and Safety</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

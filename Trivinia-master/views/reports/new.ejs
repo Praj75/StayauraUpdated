@@ -1,0 +1,112 @@
+<%- layout('layouts/boilerplate') %>
+<% title = 'New Report' %>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Submit a Report</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/reports" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="bookingId" class="form-label">Select Booking</label>
+                            <select class="form-select" id="bookingId" name="bookingId" required>
+                                <option value="">Choose a booking...</option>
+                                <% bookings.forEach(booking => { %>
+                                    <option value="<%= booking._id %>">
+                                        <%= booking.listing.title %> - <%= new Date(booking.checkIn).toLocaleDateString() %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Report Type</label>
+                            <select class="form-select" id="type" name="type" required>
+                                <option value="">Select type...</option>
+                                <option value="Maintenance">Maintenance Issue</option>
+                                <option value="Safety">Safety Concern</option>
+                                <option value="Noise">Noise Complaint</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="priority" class="form-label">Priority Level</label>
+                            <select class="form-select" id="priority" name="priority" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required 
+                                    minlength="10" placeholder="Please provide a detailed description of the issue..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="evidence" class="form-label">Evidence (Optional)</label>
+                            <input type="file" class="form-control" id="evidence" name="evidence" 
+                                   accept="image/*,.pdf">
+                            <div class="form-text">Upload photos or documents to support your report</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Submit Report</button>
+                            <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    border: none;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5c636a;
+}
+</style> 

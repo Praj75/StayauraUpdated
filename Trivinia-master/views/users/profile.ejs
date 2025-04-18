@@ -1,0 +1,229 @@
+<%- layout("./layouts/boilerplate") %>
+
+<div class="container-fluid py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <div class="position-relative d-inline-block mb-4">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 3rem;">
+                            <%= user.username.charAt(0).toUpperCase() %>
+                        </div>
+                        <div class="position-absolute bottom-0 end-0">
+                            <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Edit Profile">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h4 class="mb-1"><%= user.username %></h4>
+                    <p class="text-muted mb-3"><%= user.email %></p>
+                    <div class="d-grid gap-2">
+                        <a href="/listings/new" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Add New Listing
+                        </a>
+                        <a href="/listings" class="btn btn-outline-primary">
+                            <i class="fas fa-search me-2"></i>Browse Listings
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Quick Stats</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Total Bookings</span>
+                        <span class="fw-bold"><%= bookings ? bookings.length : 0 %></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Active Listings</span>
+                        <span class="fw-bold"><%= listings ? listings.length : 0 %></span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Member Since</span>
+                        <span class="fw-bold"><%= new Date(user.createdAt).toLocaleDateString() %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- My Bookings Section -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">My Bookings</h5>
+                    <a href="/bookings" class="btn btn-outline-primary btn-sm">View All</a>
+                </div>
+                <div class="card-body">
+                    <% if (bookings && bookings.length > 0) { %>
+                        <div class="row g-4">
+                            <% bookings.forEach(booking => { %>
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                        <div class="row g-0">
+                                            <div class="col-md-4 position-relative">
+                                                <% if (booking.listing && booking.listing.images && booking.listing.images.length > 0) { %>
+                                                    <img src="<%= booking.listing.images[0].url %>" 
+                                                         class="img-fluid h-100 w-100" 
+                                                         alt="<%= booking.listing.title %>"
+                                                         style="object-fit: cover; min-height: 200px;">
+                                                <% } else { %>
+                                                    <img src="/images/default-property.jpg" 
+                                                         class="img-fluid h-100 w-100" 
+                                                         alt="Default Property"
+                                                         style="object-fit: cover; min-height: 200px;">
+                                                <% } %>
+                                                <div class="position-absolute top-0 end-0 m-2">
+                                                    <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : booking.status === 'cancelled' ? 'danger' : 'warning' %>">
+                                                        <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                    <h5 class="card-title mb-2"><%= booking.listing.title %></h5>
+                                                    <p class="text-muted mb-2">
+                                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                                        <%= booking.listing.location %>
+                                                    </p>
+                                                    <div class="mb-2">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-calendar me-2"></i>
+                                                            <%= new Date(booking.checkIn).toLocaleDateString() %> - <%= new Date(booking.checkOut).toLocaleDateString() %>
+                                                        </small>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="h5 mb-0 text-primary">₹<%= booking.totalAmount %></span>
+                                                        <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary btn-sm">
+                                                            View Details
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-alt text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mb-3">No Bookings Yet</h5>
+                            <p class="text-muted mb-4">Start exploring amazing places to stay!</p>
+                            <a href="/listings" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Browse Listings
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- My Listings Section -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">My Listings</h5>
+                    <a href="/listings/my-listings" class="btn btn-outline-primary btn-sm">View All</a>
+                </div>
+                <div class="card-body">
+                    <% if (listings && listings.length > 0) { %>
+                        <div class="row g-4">
+                            <% listings.forEach(listing => { %>
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                        <div class="position-relative">
+                                            <% if (listing.images && listing.images.length > 0) { %>
+                                                <img src="<%= listing.images[0].url %>" 
+                                                     class="card-img-top" 
+                                                     alt="<%= listing.title %>"
+                                                     style="height: 200px; object-fit: cover;">
+                                            <% } else { %>
+                                                <img src="/images/default-property.jpg" 
+                                                     class="card-img-top" 
+                                                     alt="Default Property"
+                                                     style="height: 200px; object-fit: cover;">
+                                            <% } %>
+                                            <div class="position-absolute top-0 end-0 m-2">
+                                                <span class="badge bg-primary">
+                                                    ₹<%= listing.price %>/night
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-2"><%= listing.title %></h5>
+                                            <p class="text-muted mb-3">
+                                                <i class="fas fa-map-marker-alt me-2"></i>
+                                                <%= listing.location %>
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-3">
+                                                        <i class="fas fa-bed me-1"></i>
+                                                        <%= listing.amenities.beds %>
+                                                    </span>
+                                                    <span class="me-3">
+                                                        <i class="fas fa-bath me-1"></i>
+                                                        <%= listing.amenities.baths %>
+                                                    </span>
+                                                    <span>
+                                                        <i class="fas fa-user me-1"></i>
+                                                        <%= listing.amenities.guests %>
+                                                    </span>
+                                                </div>
+                                                <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary btn-sm">
+                                                    View Listing
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-5">
+                            <i class="fas fa-home text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mb-3">No Listings Yet</h5>
+                            <p class="text-muted mb-4">Start hosting your property today!</p>
+                            <a href="/listings/new" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add Listing
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+.card {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+.btn-outline-primary {
+    border-width: 2px;
+}
+.btn-outline-primary:hover {
+    background-color: var(--bs-primary);
+    color: white;
+}
+.fa-fw {
+    font-size: 1.2rem;
+}
+</style> 

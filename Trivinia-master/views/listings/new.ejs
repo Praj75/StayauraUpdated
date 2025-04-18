@@ -1,0 +1,89 @@
+<%- layout("/layouts/boilerplate") %>
+<div class="row mt-3">
+    <div class="col-8 offset-2">
+        <br>
+        <h2>Create New Listing</h2>
+        <form method="post" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Enter Title</label>
+                <input name="listing[title]" placeholder="Enter your dope title!" type="text" class="form-control" required>
+                <div class="valid-feedback">Dope Title</div>
+                <div class="invalid-feedback">Title is required!</div>
+            </div>
+
+            <div class="mb-3"> 
+                <label for="description" class="form-label">Description</label>
+                <textarea name="listing[description]" class="form-control" required></textarea>
+                <div class="invalid-feedback">Enter Description</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label" required>Upload Your Listing Image</label>
+                <input name="listing[image]" type="file" class="form-control">
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <label for="price" class="form-label">Price</label>
+                    <input name="listing[price]" placeholder="Enter Price" class="form-control" required>
+                    <div class="invalid-feedback">Price should be valid</div>
+                </div>
+
+                <div class="mb-3 col-md-8">
+                    <label for="country" class="form-label">Country</label>
+                    <input name="listing[country]" placeholder="Enter Country" type="text" class="form-control" required>
+                    <div class="invalid-feedback">Country should be valid</div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input name="listing[location]" placeholder="Address, City, State" type="text" class="form-control" required>
+                <div class="invalid-feedback">Location should be valid</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="category" class="form-label">Listing Category</label>
+                <select name="listing[category]" class="form-control" required>
+                    <option value="" selected disabled>Select a category</option>
+                    <option value="beach">🏖 Beach</option>
+                    <option value="mountain">🏔 Mountain</option>
+                    <option value="city">🏙 City</option>
+                    <option value="lake">🌊 Lake</option>
+                    <option value="countryside">🌳 Countryside</option>
+                    <option value="mansion">🏰 Mansion</option>
+                </select>
+                <div class="invalid-feedback">Please select a category</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="amenities" class="form-label">Amenities</label>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group mb-2">
+                            <span class="input-group-text"><i class="fas fa-bed"></i></span>
+                            <input type="number" name="listing[amenities][beds]" class="form-control" placeholder="Number of beds" min="1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group mb-2">
+                            <span class="input-group-text"><i class="fas fa-bath"></i></span>
+                            <input type="number" name="listing[amenities][baths]" class="form-control" placeholder="Number of baths" min="1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group mb-2">
+                            <span class="input-group-text"><i class="fas fa-users"></i></span>
+                            <input type="number" name="listing[amenities][guests]" class="form-control" placeholder="Max guests" min="1" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="button2">
+                Add
+            </button>
+            <br><br><br><br><br><br><br>
+        </form>
+    </div>
+</div>

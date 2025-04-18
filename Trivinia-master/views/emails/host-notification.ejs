@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Booking Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        .booking-details {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .booking-details h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #666;
+        }
+        .guest-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .total-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://your-logo-url.com/logo.png" alt="Company Logo" class="logo">
+        <h1>New Booking Notification</h1>
+    </div>
+
+    <p>Dear <%= hostName %>,</p>
+    <p>You have received a new booking for your property!</p>
+
+    <div class="booking-details">
+        <h2>Booking Details</h2>
+        <div class="info-item">
+            <span class="info-label">Booking ID:</span> <%= bookingId %>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Property:</span> <%= listingTitle %>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Check-in Date:</span> <%= checkInDate %>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Check-out Date:</span> <%= checkOutDate %>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Number of Guests:</span> <%= numGuests %>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Total Amount:</span> <%= totalPrice %>
+        </div>
+    </div>
+
+    <div class="guest-info">
+        <h2>Guest Information</h2>
+        <div class="info-item">
+            <span class="info-label">Name:</span> <%= guestName %>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Email:</span> <%= guestEmail %>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Phone:</span> <%= guestPhone %>
+        </div>
+    </div>
+
+    <p>Please prepare your property for the guest's arrival and ensure all necessary arrangements are made.</p>
+
+    <div class="footer">
+        <p>This is an automated email. Please do not reply directly to this message.</p>
+        <p>If you have any questions, please contact our support team.</p>
+    </div>
+</body>
+</html> 

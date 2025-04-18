@@ -1,0 +1,37 @@
+<%- layout('layouts/boilerplate') %>
+<% title = 'Page Title' %>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4"><%= title %></h1>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="content">
+                        <!-- Content will be inserted here -->
+                        <%- content %>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h4>Related Pages</h4>
+                <div class="list-group">
+                    <% relatedPages.forEach(page => { %>
+                        <a href="/pages/<%= page.url %>" class="list-group-item list-group-item-action">
+                            <%= page.title %>
+                        </a>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

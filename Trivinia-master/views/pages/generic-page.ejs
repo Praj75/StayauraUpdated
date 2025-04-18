@@ -1,0 +1,89 @@
+<%- layout('layouts/boilerplate') %>
+<%# title is already set by the route %>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4"><%= title %></h1>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="content">
+                        <p class="lead"><%= description %></p>
+                        <p>This page is currently under construction and will be available soon.</p>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            This is a placeholder page. Please check back later for updated content.
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="/pages/help-center" class="btn btn-primary">
+                                <i class="fas fa-question-circle me-2"></i>Visit Help Center
+                            </a>
+                        </div>
+
+                        <% if (lastUpdated) { %>
+                            <div class="mt-4 text-muted small">
+                                <i class="fas fa-clock me-1"></i>
+                                Last updated: <%= new Date(lastUpdated).toLocaleDateString() %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h4>Related Pages</h4>
+                <div class="list-group">
+                    <a href="/pages/help-center" class="list-group-item list-group-item-action">Help Center</a>
+                    <a href="/pages/safety-information" class="list-group-item list-group-item-action">Safety Information</a>
+                    <a href="/pages/report-a-concern" class="list-group-item list-group-item-action">Report a Concern</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    border: none;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding-left: 0;
+}
+
+.breadcrumb-item a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+.list-group-item {
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+</style> 

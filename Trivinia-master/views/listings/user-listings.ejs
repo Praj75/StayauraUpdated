@@ -1,0 +1,157 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1>My Listings</h1>
+            <a href="/listings/new" class="btn btn-primary">Create New Listing</a>
+        </div>
+    </div>
+
+    <% if (listings && listings.length > 0) { %>
+        <div class="row g-4">
+            <% listings.forEach(listing => { %>
+                <div class="col-md-6 col-lg-4">
+                    <div class="listing-card">
+                        <div class="listing-img-container">
+                            <img src="<%= listing.image.url %>" 
+                                 alt="<%= listing.title %>"
+                                 class="listing-img">
+                            <div class="listing-price">
+                                $<%= listing.price %> <span class="price-suffix">/ night</span>
+                            </div>
+                        </div>
+                        <div class="listing-content">
+                            <h5 class="listing-title"><%= listing.title %></h5>
+                            <p class="listing-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <%= listing.location %>
+                            </p>
+                            <div class="listing-actions">
+                                <a href="/listings/<%= listing._id %>" class="btn btn-outline-secondary">
+                                    View Details
+                                </a>
+                                <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-primary">
+                                    Edit Listing
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="text-center py-5">
+            <p class="text-muted mb-4">You haven't created any listings yet.</p>
+            <a href="/listings/new" class="btn btn-primary">Create Your First Listing</a>
+        </div>
+    <% } %>
+</div>
+
+<style>
+    .listing-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .listing-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .listing-img-container {
+        position: relative;
+    }
+
+    .listing-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .listing-price {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .price-suffix {
+        font-weight: 400;
+        color: #718096;
+    }
+
+    .listing-content {
+        padding: 20px;
+    }
+
+    .listing-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .listing-location {
+        color: #718096;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .listing-location i {
+        margin-right: 6px;
+    }
+
+    .listing-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .btn-outline-secondary, .btn-outline-primary {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .btn-outline-primary {
+        color: #FF385C;
+        border-color: #FF385C;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #FF385C;
+        border-color: #FF385C;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #FF385C;
+        border-color: #FF385C;
+    }
+
+    .btn-primary:hover {
+        background-color: #E31C5F;
+        border-color: #E31C5F;
+    }
+
+    @media (max-width: 768px) {
+        .listing-content {
+            padding: 16px;
+        }
+        
+        .listing-title {
+            font-size: 16px;
+        }
+    }
+</style> 

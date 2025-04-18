@@ -1,0 +1,780 @@
+<style>
+/* Modern Footer Styles */
+footer {
+  background-color: var(--light-color);
+  padding: 4rem 1rem 2rem;
+  color: var(--gray-medium);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--gray-light);
+  font-family: 'Roboto', 'Lato', 'Montserrat', sans-serif;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.footer-section {
+  min-width: 160px;
+}
+
+.footer-section h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: var(--dark-color);
+  font-family: 'Montserrat', 'Roboto', 'Lato', sans-serif;
+}
+
+.footer-section a {
+  display: block;
+  color: var(--gray-medium);
+  text-decoration: none;
+  margin-bottom: 0.8rem;
+  transition: all var(--transition-fast);
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: 'Roboto', 'Lato', 'Montserrat', sans-serif;
+}
+
+.footer-section a:hover {
+  color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.footer-divider {
+  height: 1px;
+  background-color: var(--gray-light);
+  margin: 2rem 0;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-bottom a {
+  color: var(--gray-medium);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: 'Roboto', 'Lato', 'Montserrat', sans-serif;
+}
+
+.footer-bottom a:hover {
+  color: var(--primary-color);
+}
+
+.footer-locale {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.footer-locale i {
+  margin-right: 0.3rem;
+}
+
+.locale-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.locale-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.locale-dropdown-btn {
+  background: none;
+  border: none;
+  color: var(--gray-medium);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: 'Roboto', 'Lato', 'Montserrat', sans-serif;
+}
+
+.locale-dropdown-btn:hover {
+  background-color: var(--white);
+  color: var(--primary-color);
+}
+
+.locale-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--white);
+  min-width: 180px;
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 0.5rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.locale-dropdown-content.show {
+  display: block;
+}
+
+.locale-dropdown-content a {
+  color: var(--gray-medium);
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  display: block;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+  font-family: 'Roboto', 'Lato', 'Montserrat', sans-serif;
+}
+
+.locale-dropdown-content a:hover {
+  background-color: var(--light-color);
+  color: var(--primary-color);
+}
+
+.locale-dropdown-content a.active {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--white);
+  color: var(--gray-medium);
+  transition: all var(--transition-fast);
+}
+
+.social-link:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding: 3rem 1rem 1.5rem;
+  }
+  
+  .footer-links {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .locale-selector {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-links {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<footer>
+  <div class="footer-container">
+    <!-- Top Links Section -->
+    <div class="footer-links">
+      <div class="footer-section">
+        <h4>Support</h4>
+        <a href="/pages/help-center">Help Center</a>
+        <a href="/pages/safety-information">Safety information</a>
+        <a href="/pages/cancellation-options">Cancellation options</a>
+        <a href="/pages/covid-19-response">COVID-19 response</a>
+        <a href="/pages/guests-with-disabilities">Guests with disabilities</a>
+        <a href="/pages/report-a-concern">Report a concern</a>
+      </div>
+
+      <div class="footer-section">
+        <h4>Community</h4>
+        <a href="/pages/stayaura-cares">Stayaura Cares</a>
+        <a href="/pages/support-refugees">Support refugees</a>
+        <a href="/pages/diversity-inclusion">Diversity & inclusion</a>
+        <a href="/pages/anti-discrimination">Anti-discrimination</a>
+      </div>
+
+      <div class="footer-section">
+        <h4>Hosting</h4>
+        <a href="/pages/try-hosting">Try hosting</a>
+        <a href="/pages/protection-for-hosts">Protection for hosts</a>
+        <a href="/pages/explore-resources">Explore resources</a>
+        <a href="/pages/community-forum">Community forum</a>
+        <a href="/pages/responsible-hosting">Responsible hosting</a>
+      </div>
+
+      <div class="footer-section">
+        <h4>About</h4>
+        <a href="/pages/newsroom">Newsroom</a>
+        <a href="/pages/features">Features</a>
+        <a href="/pages/careers">Careers</a>
+        <a href="/pages/investors">Investors</a>
+        <a href="/pages/stayaura-luxe">Stayaura Luxe</a>
+      </div>
+    </div>
+
+    <!-- Social Links -->
+    <div class="social-links">
+      <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+    </div>
+
+    <!-- Divider -->
+    <div class="footer-divider"></div>
+
+    <!-- Bottom Info -->
+    <div class="footer-bottom">
+      <div>
+        © 2025 Stayaura, Inc.
+        · <a href="/pages/privacy">Privacy</a>
+        · <a href="/pages/terms">Terms</a>
+        · <a href="/pages/sitemap">Sitemap</a>
+      </div>
+      <div class="footer-locale">
+        <div class="locale-selector">
+          <div class="locale-dropdown">
+            <button class="locale-dropdown-btn" id="language-btn">
+              <i class="fas fa-globe"></i> English (IN)
+            </button>
+            <div class="locale-dropdown-content" id="language-dropdown">
+              <a href="#" class="active">English (IN)</a>
+              <a href="#">English (US)</a>
+              <a href="#">English (UK)</a>
+              <a href="#">हिंदी</a>
+              <a href="#">Español</a>
+              <a href="#">Français</a>
+              <a href="#">Deutsch</a>
+            </div>
+          </div>
+          <div class="locale-dropdown">
+            <button class="locale-dropdown-btn" id="currency-btn">
+              <i class="fas fa-rupee-sign"></i> INR
+            </button>
+            <div class="locale-dropdown-content" id="currency-dropdown">
+              <a href="#" class="active">INR - Indian Rupee</a>
+              <a href="#">USD - US Dollar</a>
+              <a href="#">EUR - Euro</a>
+              <a href="#">GBP - British Pound</a>
+              <a href="#">JPY - Japanese Yen</a>
+              <a href="#">AUD - Australian Dollar</a>
+              <a href="#">CAD - Canadian Dollar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Custom JavaScript -->
+<script>
+    // Auto-dismiss alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Language and currency dropdown functionality
+        const languageBtn = document.getElementById('language-btn');
+        const languageDropdown = document.getElementById('language-dropdown');
+        const currencyBtn = document.getElementById('currency-btn');
+        const currencyDropdown = document.getElementById('currency-dropdown');
+        
+        // Toggle language dropdown
+        languageBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+            currencyDropdown.classList.remove('show');
+        });
+        
+        // Toggle currency dropdown
+        currencyBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            currencyDropdown.classList.toggle('show');
+            languageDropdown.classList.remove('show');
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            languageDropdown.classList.remove('show');
+            currencyDropdown.classList.remove('show');
+        });
+        
+        // Handle language selection
+        const languageLinks = languageDropdown.querySelectorAll('a');
+        languageLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const selectedLanguage = this.textContent;
+                
+                // Update the button text
+                languageBtn.innerHTML = `<i class="fas fa-globe"></i> ${selectedLanguage}`;
+                
+                // Update active state
+                languageLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Close the dropdown
+                languageDropdown.classList.remove('show');
+                
+                // Change the language
+                changeLanguage(selectedLanguage);
+            });
+        });
+        
+        // Handle currency selection
+        const currencyLinks = currencyDropdown.querySelectorAll('a');
+        currencyLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const selectedCurrency = this.textContent.split(' - ')[0];
+                currencyBtn.innerHTML = `<i class="fas fa-${getCurrencyIcon(selectedCurrency)}"></i> ${selectedCurrency}`;
+                currencyLinks.forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                currencyDropdown.classList.remove('show');
+                
+                // Change the currency
+                changeCurrency(selectedCurrency);
+            });
+        });
+        
+        // Function to change language
+        function changeLanguage(language) {
+            console.log("Changing language to:", language);
+            
+            // Store the selected language in localStorage
+            localStorage.setItem('selectedLanguage', language);
+            
+            // Show a notification
+            showNotification(`Language changed to ${language}`);
+            
+            // Update the page language
+            updatePageLanguage(language);
+        }
+        
+        // Function to change currency
+        function changeCurrency(currency) {
+            // Store the selected currency in localStorage
+            localStorage.setItem('selectedCurrency', currency);
+            
+            // Update currency symbol
+            updateCurrencySymbol(currency);
+            
+            // Show a notification
+            showNotification(`Currency changed to ${currency}`);
+            
+            // In a real application, you would reload the page with the new currency
+            // For demo purposes, we'll just update the UI
+            updatePageCurrency(currency);
+        }
+        
+        // Function to update currency symbol based on language/currency
+        function updateCurrencySymbol(currency) {
+            let symbol = '₹';
+            
+            switch(currency) {
+                case 'USD':
+                    symbol = '$';
+                    break;
+                case 'EUR':
+                    symbol = '€';
+                    break;
+                case 'GBP':
+                    symbol = '£';
+                    break;
+                case 'JPY':
+                    symbol = '¥';
+                    break;
+                case 'AUD':
+                    symbol = 'A$';
+                    break;
+                case 'CAD':
+                    symbol = 'C$';
+                    break;
+                case 'INR':
+                    symbol = '₹';
+                    break;
+            }
+            
+            // Update the currency button icon
+            currencyBtn.innerHTML = `<i class="fas fa-${getCurrencyIcon(currency)}"></i> ${currency}`;
+            
+            // Remove the price conversion code
+            // document.querySelectorAll('.card-price').forEach(priceEl => {
+            //     const priceText = priceEl.textContent;
+            //     const priceValue = parseInt(priceText.match(/\d+/)[0]);
+            //     priceEl.innerHTML = `₹${priceValue.toLocaleString("en-IN")} <small>night</small>`;
+            // });
+        }
+        
+        // Function to get the appropriate icon for a currency
+        function getCurrencyIcon(currency) {
+            switch(currency) {
+                case 'USD':
+                    return 'dollar-sign';
+                case 'EUR':
+                    return 'euro-sign';
+                case 'GBP':
+                    return 'pound-sign';
+                case 'JPY':
+                    return 'yen-sign';
+                case 'AUD':
+                case 'CAD':
+                case 'INR':
+                    return 'rupee-sign';
+                default:
+                    return 'dollar-sign';
+            }
+        }
+        
+        // Function to update page language
+        function updatePageLanguage(language) {
+            console.log("Updating language to:", language);
+            
+            // Update hero text based on language
+            const heroTitle = document.querySelector('.hero h1');
+            const heroDesc = document.querySelector('.hero p');
+            
+            if (heroTitle && heroDesc) {
+                switch(language) {
+                    case 'English (IN)':
+                    case 'English (US)':
+                    case 'English (UK)':
+                        heroTitle.textContent = 'Find your next stay';
+                        heroDesc.textContent = 'Discover unique places to stay and experiences hosted by locals around the world';
+                        break;
+                    case 'हिंदी':
+                        heroTitle.textContent = 'अपना अगला स्टे ढूंढें';
+                        heroDesc.textContent = 'दुनिया भर के स्थानीय लोगों द्वारा होस्ट किए गए अनूठे स्थानों और अनुभवों की खोज करें';
+                        break;
+                    case 'Español':
+                        heroTitle.textContent = 'Encuentra tu próxima estadía';
+                        heroDesc.textContent = 'Descubre lugares únicos para quedarte y experiencias organizadas por locales de todo el mundo';
+                        break;
+                    case 'Français':
+                        heroTitle.textContent = 'Trouvez votre prochain séjour';
+                        heroDesc.textContent = 'Découvrez des lieux uniques pour séjourner et des expériences organisées par des habitants du monde entier';
+                        break;
+                    case 'Deutsch':
+                        heroTitle.textContent = 'Finden Sie Ihren nächsten Aufenthalt';
+                        heroDesc.textContent = 'Entdecken Sie einzigartige Orte zum Übernachten und Erlebnisse, die von Einheimischen auf der ganzen Welt organisiert werden';
+                        break;
+                }
+            }
+            
+            // Update filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            if (filterButtons.length > 0) {
+                switch(language) {
+                    case 'English (IN)':
+                    case 'English (US)':
+                    case 'English (UK)':
+                        filterButtons[0].textContent = '✨ All';
+                        filterButtons[1].textContent = '🏖 Beach';
+                        filterButtons[2].textContent = '🏔 Mountain';
+                        filterButtons[3].textContent = '🏙 City';
+                        filterButtons[4].textContent = '🌊 Lake';
+                        filterButtons[5].textContent = '🔥 Trending';
+                        filterButtons[6].textContent = '🌳 Countryside';
+                        filterButtons[7].textContent = '🏰 Mansion';
+                        break;
+                    case 'हिंदी':
+                        filterButtons[0].textContent = '✨ सभी';
+                        filterButtons[1].textContent = '🏖 समुद्र तट';
+                        filterButtons[2].textContent = '🏔 पहाड़';
+                        filterButtons[3].textContent = '🏙 शहर';
+                        filterButtons[4].textContent = '🌊 झील';
+                        filterButtons[5].textContent = '🔥 ट्रेंडिंग';
+                        filterButtons[6].textContent = '🌳 ग्रामीण इलाका';
+                        filterButtons[7].textContent = '🏰 हवेली';
+                        break;
+                    case 'Español':
+                        filterButtons[0].textContent = '✨ Todos';
+                        filterButtons[1].textContent = '🏖 Playa';
+                        filterButtons[2].textContent = '🏔 Montaña';
+                        filterButtons[3].textContent = '🏙 Ciudad';
+                        filterButtons[4].textContent = '🌊 Lago';
+                        filterButtons[5].textContent = '🔥 Tendencia';
+                        filterButtons[6].textContent = '🌳 Campo';
+                        filterButtons[7].textContent = '🏰 Mansión';
+                        break;
+                    case 'Français':
+                        filterButtons[0].textContent = '✨ Tout';
+                        filterButtons[1].textContent = '🏖 Plage';
+                        filterButtons[2].textContent = '🏔 Montagne';
+                        filterButtons[3].textContent = '🏙 Ville';
+                        filterButtons[4].textContent = '🌊 Lac';
+                        filterButtons[5].textContent = '🔥 Tendance';
+                        filterButtons[6].textContent = '🌳 Campagne';
+                        filterButtons[7].textContent = '🏰 Manoir';
+                        break;
+                    case 'Deutsch':
+                        filterButtons[0].textContent = '✨ Alle';
+                        filterButtons[1].textContent = '🏖 Strand';
+                        filterButtons[2].textContent = '🏔 Berg';
+                        filterButtons[3].textContent = '🏙 Stadt';
+                        filterButtons[4].textContent = '🌊 See';
+                        filterButtons[5].textContent = '🔥 Trend';
+                        filterButtons[6].textContent = '🌳 Land';
+                        filterButtons[7].textContent = '🏰 Villa';
+                        break;
+                }
+            }
+            
+            // Update search form
+            const locationSelect = document.getElementById('location');
+            if (locationSelect) {
+                const placeholderOption = locationSelect.querySelector('option[selected]');
+                if (placeholderOption) {
+                    placeholderOption.textContent = 
+                        language === 'हिंदी' ? 'आप कहाँ जा रहे हैं?' :
+                        language === 'Español' ? '¿A dónde vas?' :
+                        language === 'Français' ? 'Où allez-vous?' :
+                        language === 'Deutsch' ? 'Wohin gehen Sie?' :
+                        'Where are you going?';
+                }
+            }
+            
+            // Update card text
+            const cardTitles = document.querySelectorAll('.card-title');
+            const cardLocations = document.querySelectorAll('.card-location span');
+            const cardReviews = document.querySelectorAll('.card-reviews span');
+            
+            if (cardTitles.length > 0) {
+                // This is a simplified example - in a real app, you'd have translations for each title
+                cardTitles.forEach(title => {
+                    if (language !== 'English (IN)' && language !== 'English (US)' && language !== 'English (UK)') {
+                        title.textContent = `[${language}] ${title.textContent}`;
+                    } else {
+                        // Remove any language prefix if switching back to English
+                        title.textContent = title.textContent.replace(/^\[.*?\] /, '');
+                    }
+                });
+            }
+            
+            if (cardLocations.length > 0) {
+                cardLocations.forEach(location => {
+                    if (language === 'हिंदी') {
+                        location.textContent = 'मुंबई, भारत';
+                    } else if (language === 'Español') {
+                        location.textContent = 'Mumbai, India';
+                    } else if (language === 'Français') {
+                        location.textContent = 'Mumbai, Inde';
+                    } else if (language === 'Deutsch') {
+                        location.textContent = 'Mumbai, Indien';
+                    } else {
+                        location.textContent = 'Mumbai, India';
+                    }
+                });
+            }
+            
+            if (cardReviews.length > 0) {
+                cardReviews.forEach(review => {
+                    const reviewText = review.textContent;
+                    const reviewCount = reviewText.match(/\d+/)[0];
+                    
+                    if (language === 'हिंदी') {
+                        review.textContent = `${reviewCount} समीक्षाएं`;
+                    } else if (language === 'Español') {
+                        review.textContent = `${reviewCount} reseñas`;
+                    } else if (language === 'Français') {
+                        review.textContent = `${reviewCount} avis`;
+                    } else if (language === 'Deutsch') {
+                        review.textContent = `${reviewCount} Bewertungen`;
+                    } else {
+                        review.textContent = `${reviewCount} reviews`;
+                    }
+                });
+            }
+            
+            // Update card price text
+            const cardPrices = document.querySelectorAll('.card-price small');
+            if (cardPrices.length > 0) {
+                cardPrices.forEach(price => {
+                    if (language === 'हिंदी') {
+                        price.textContent = 'प्रति रात';
+                    } else if (language === 'Español') {
+                        price.textContent = 'noche';
+                    } else if (language === 'Français') {
+                        price.textContent = 'nuit';
+                    } else if (language === 'Deutsch') {
+                        price.textContent = 'Nacht';
+                    } else {
+                        price.textContent = 'night';
+                    }
+                });
+            }
+        }
+        
+        // Function to update page currency (demo only)
+        function updatePageCurrency(currency) {
+            // Get the exchange rate (in a real app, this would come from an API)
+            const exchangeRates = {
+                'USD': 0.012,
+                'EUR': 0.011,
+                'GBP': 0.0095,
+                'JPY': 1.79,
+                'AUD': 0.018,
+                'CAD': 0.016,
+                'INR': 1
+            };
+            
+            const rate = exchangeRates[currency] || 1;
+            
+            // Update all price elements on the page
+            document.querySelectorAll('.card-price, .price, .amount').forEach(priceEl => {
+                const priceText = priceEl.textContent;
+                const priceValue = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+                if (!isNaN(priceValue)) {
+                    const convertedPrice = Math.round(priceValue * rate);
+                    
+                    let symbol = '₹';
+                    switch(currency) {
+                        case 'USD':
+                            symbol = '$';
+                            break;
+                        case 'EUR':
+                            symbol = '€';
+                            break;
+                        case 'GBP':
+                            symbol = '£';
+                            break;
+                        case 'JPY':
+                            symbol = '¥';
+                            break;
+                        case 'AUD':
+                            symbol = 'A$';
+                            break;
+                        case 'CAD':
+                            symbol = 'C$';
+                            break;
+                        case 'INR':
+                            symbol = '₹';
+                            break;
+                    }
+                    
+                    // Update the price display
+                    if (priceEl.classList.contains('card-price')) {
+                        priceEl.innerHTML = `${symbol}${convertedPrice.toLocaleString()} <small>night</small>`;
+                    } else if (priceEl.classList.contains('amount')) {
+                        priceEl.innerHTML = `${symbol}${convertedPrice.toLocaleString()}`;
+                    } else {
+                        priceEl.innerHTML = `${symbol}${convertedPrice.toLocaleString()}`;
+                    }
+                }
+            });
+        }
+        
+        // Function to show a notification
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-success alert-dismissible fade show';
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.minWidth = '300px';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Add to document
+            document.body.appendChild(notification);
+            
+            // Auto-dismiss after 3 seconds
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(notification);
+                bsAlert.close();
+            }, 3000);
+        }
+        
+        // Check if there are stored preferences and apply them
+        const storedLanguage = localStorage.getItem('selectedLanguage');
+        const storedCurrency = localStorage.getItem('selectedCurrency');
+        
+        if (storedLanguage) {
+            // Update the language button
+            languageBtn.innerHTML = `<i class="fas fa-globe"></i> ${storedLanguage}`;
+            
+            // Update the active state in the dropdown
+            languageLinks.forEach(link => {
+                if (link.textContent === storedLanguage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            // Apply the stored language
+            updatePageLanguage(storedLanguage);
+        }
+        
+        if (storedCurrency) {
+            // Update the currency button
+            currencyBtn.innerHTML = `<i class="fas fa-${getCurrencyIcon(storedCurrency)}"></i> ${storedCurrency}`;
+            
+            // Update the active state in the dropdown
+            currencyLinks.forEach(link => {
+                if (link.textContent.startsWith(storedCurrency)) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            // Apply the stored currency
+            updatePageCurrency(storedCurrency);
+        }
+    });
+</script>
+</body>
+</html>

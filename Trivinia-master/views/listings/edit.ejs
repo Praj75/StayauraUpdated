@@ -1,0 +1,219 @@
+<%- layout("/layouts/boilerplate")%>
+<div class="row mt-3">
+    <div class="col-8 offset-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h1 class="mb-4">Edit your Listing</h1>
+                <form method="post" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required/>
+                        <div class="valid-feedback">Dope Title</div>
+                    </div>
+                   
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>
+                        <div class="invalid-feedback">Enter Description</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p>Current Listing Images</p>
+                        <% if (listing.images && listing.images.length > 0) { %>
+                            <div class="current-images d-flex flex-wrap gap-3">
+                                <% listing.images.forEach((image, index) => { %>
+                                    <div class="image-container position-relative">
+                                        <img src="<%= image.url %>" alt="Listing Image" class="rounded" style="width: 200px; height: 150px; object-fit: cover;">
+                                        <button type="button" class="glass-btn delete-btn position-absolute top-0 end-0 m-2" data-image-index="<%= index %>" onclick="deleteImage(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                <% }); %>
+                            </div>
+                            <input type="hidden" name="deleteImages" id="deleteImages" value="[]">
+                        <% } else { %>
+                            <p>No images uploaded yet.</p>
+                        <% } %>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Upload New Listing Image</label>
+                        <input name="listing[image]" type="file" class="form-control" onchange="previewImage(this)"/>
+                        <div id="imagePreview" class="mt-2 d-flex flex-wrap gap-3"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-md-4">
+                            <label for="price" class="form-label">Price</label>
+                            <input name="listing[price]" value="<%= listing.price %>" type="number" min="1" class="form-control" required/>
+                            <div class="invalid-feedback">Price should be greater than 0</div>
+                        </div>
+                    
+                        <div class="mb-3 col-md-8">
+                            <label for="country" class="form-label">Country</label>
+                            <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required/>
+                            <div class="invalid-feedback">Country should be valid</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required/>
+                        <div class="invalid-feedback">Location should be valid</div>
+                    </div>
+
+                    <button class="glass-btn edit-btn w-100 mt-3">
+                        <i class="fas fa-save me-2"></i>Update Listing
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Glass Button Styles */
+    .glass-btn {
+        position: relative;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: black;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+    }
+
+    .glass-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-btn:hover::before {
+        transform: translateX(100%);
+    }
+
+    .glass-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .glass-btn:active {
+        transform: translateY(1px);
+    }
+
+    .edit-btn {
+        background: linear-gradient(
+            135deg,
+            rgba(79, 172, 254, 0.2),
+            rgba(0, 242, 254, 0.2)
+        );
+        border: 1px solid rgba(79, 172, 254, 0.3);
+    }
+
+    .delete-btn {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 99, 99, 0.2),
+            rgba(255, 99, 99, 0.1)
+        );
+        border: 1px solid rgba(255, 99, 99, 0.3);
+        padding: 0.4rem 0.8rem;
+        min-width: auto;
+        color: black;
+    }
+
+    .image-container {
+        transition: all 0.3s ease;
+    }
+
+    .image-container img {
+        transition: all 0.3s ease;
+    }
+
+    .image-container:hover img {
+        transform: scale(1.05);
+    }
+
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: rgba(79, 172, 254, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+    }
+</style>
+
+<script>
+    const deleteImages = new Set();
+    
+    function deleteImage(button) {
+        const index = button.getAttribute('data-image-index');
+        const imageContainer = button.closest('.image-container');
+        
+        if (deleteImages.has(index)) {
+            // Restore the image
+            deleteImages.delete(index);
+            imageContainer.style.opacity = '1';
+            button.innerHTML = '<i class="fas fa-trash"></i>';
+        } else {
+            // Mark the image for deletion
+            deleteImages.add(index);
+            imageContainer.style.opacity = '0.5';
+            button.innerHTML = '<i class="fas fa-undo"></i>';
+        }
+        
+        // Update the hidden input with the array of indices to delete
+        document.getElementById('deleteImages').value = JSON.stringify(Array.from(deleteImages));
+    }
+
+    function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'rounded';
+                img.style.width = '200px';
+                img.style.height = '150px';
+                img.style.objectFit = 'cover';
+                preview.appendChild(img);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

@@ -1,0 +1,88 @@
+<%
+    // Convert arrays to Sets to remove duplicates
+    const uniqueSuccess = (typeof success !== 'undefined' && success) ? [...new Set(success)] : [];    
+    const uniqueError = (typeof error !== 'undefined' && error) ? [...new Set(error)] : [];
+%>
+
+<!-- Flash Messages Container -->
+<div class="flash-messages-container">
+    <% if (uniqueSuccess.length > 0) { %>
+        <% uniqueSuccess.forEach(function(message) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <%= message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% }); %>
+    <% } %>
+
+    <% if (uniqueError.length > 0) { %>
+        <% uniqueError.forEach(function(message) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <%= message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% }); %>
+    <% } %>
+</div>
+
+<style>
+    .flash-messages-container {
+        position: fixed;
+        top: 80px;  /* Below navbar */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 600px;
+        z-index: 9999;  /* Ensure it's above other elements */
+    }
+
+    .alert {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: slideDown 0.3s ease-out forwards;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .alert-dismissible .btn-close {
+        padding: 1.25rem;
+    }
+</style>
+
+<script>
+    // Auto-dismiss flash messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+</script>

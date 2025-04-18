@@ -1,0 +1,134 @@
+<%- layout('layouts/boilerplate') %>
+<% title = 'Report a Concern' %>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/pages/help-center">Help Center</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Report a Concern</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4">Report a Concern</h1>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Before You Submit</h5>
+                    <p class="card-text">Please ensure you have all the necessary information ready before submitting your report. This will help us address your concern more effectively.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-info-circle text-primary me-2"></i>Include relevant booking or listing details</li>
+                        <li><i class="fas fa-info-circle text-primary me-2"></i>Provide specific dates and times</li>
+                        <li><i class="fas fa-info-circle text-primary me-2"></i>Attach any supporting documentation</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <form id="reportForm" class="needs-validation" novalidate>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Report Details</h5>
+                        
+                        <div class="mb-3">
+                            <label for="reportType" class="form-label">Type of Concern</label>
+                            <select class="form-select" id="reportType" required>
+                                <option value="">Select a type...</option>
+                                <option value="safety">Safety Issue</option>
+                                <option value="property">Property Condition</option>
+                                <option value="host">Host Behavior</option>
+                                <option value="guest">Guest Behavior</option>
+                                <option value="payment">Payment Issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a type of concern.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bookingId" class="form-label">Booking ID (if applicable)</label>
+                            <input type="text" class="form-control" id="bookingId" placeholder="Enter booking ID">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="listingId" class="form-label">Listing ID (if applicable)</label>
+                            <input type="text" class="form-control" id="listingId" placeholder="Enter listing ID">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="incidentDate" class="form-label">Date of Incident</label>
+                            <input type="date" class="form-control" id="incidentDate" required>
+                            <div class="invalid-feedback">Please select the date of the incident.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="5" required placeholder="Please provide a detailed description of your concern..."></textarea>
+                            <div class="invalid-feedback">Please provide a description of your concern.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="evidence" class="form-label">Supporting Evidence</label>
+                            <input type="file" class="form-control" id="evidence" multiple>
+                            <div class="form-text">You can upload multiple files (photos, documents, etc.)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Contact Information</h5>
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                            <div class="invalid-feedback">Please enter your full name.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" required>
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" required>
+                            <div class="invalid-feedback">Please enter your phone number.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Report</button>
+                    <a href="/pages/help-center" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+
+// Form submission
+document.getElementById('reportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Here you would typically send the form data to your backend
+    alert('Thank you for your report. Our team will review it and get back to you shortly.');
+    window.location.href = '/pages/help-center';
+});
+</script> 

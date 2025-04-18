@@ -1,0 +1,153 @@
+<%- layout('layouts/boilerplate') %>
+<% title = 'Edit Report' %>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0">Edit Report #<%= report._id.toString().slice(-6) %></h4>
+                </div>
+                <div class="card-body">
+                    <form action="/reports/<%= report._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+                        <!-- Report Type -->
+                        <div class="mb-4">
+                            <label for="type" class="form-label">Report Type</label>
+                            <select class="form-select" id="type" name="type" required>
+                                <option value="Maintenance" <%= report.type === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+                                <option value="Safety" <%= report.type === 'Safety' ? 'selected' : '' %>>Safety</option>
+                                <option value="Noise" <%= report.type === 'Noise' ? 'selected' : '' %>>Noise</option>
+                                <option value="Other" <%= report.type === 'Other' ? 'selected' : '' %>>Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Priority Level -->
+                        <div class="mb-4">
+                            <label for="priority" class="form-label">Priority Level</label>
+                            <select class="form-select" id="priority" name="priority" required>
+                                <option value="Low" <%= report.priority === 'Low' ? 'selected' : '' %>>Low</option>
+                                <option value="Medium" <%= report.priority === 'Medium' ? 'selected' : '' %>>Medium</option>
+                                <option value="High" <%= report.priority === 'High' ? 'selected' : '' %>>High</option>
+                                <option value="Urgent" <%= report.priority === 'Urgent' ? 'selected' : '' %>>Urgent</option>
+                            </select>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required><%= report.description %></textarea>
+                            <div class="form-text">Please provide detailed information about the issue.</div>
+                        </div>
+
+                        <!-- Evidence Upload -->
+                        <div class="mb-4">
+                            <label for="evidence" class="form-label">Evidence (Optional)</label>
+                            <input type="file" class="form-control" id="evidence" name="evidence" accept="image/*,.pdf">
+                            <div class="form-text">Upload images or PDF documents as evidence. Max file size: 5MB</div>
+                            
+                            <% if (report.evidence) { %>
+                                <div class="mt-3">
+                                    <label class="form-label">Current Evidence</label>
+                                    <div class="current-evidence">
+                                        <% if (report.evidence.match(/\.(jpg|jpeg|png|gif)$/i)) { %>
+                                            <img src="<%= report.evidence %>" alt="Current Evidence" class="img-fluid rounded mb-2">
+                                        <% } else { %>
+                                            <a href="<%= report.evidence %>" class="btn btn-outline-primary mb-2" target="_blank">
+                                                <i class="fas fa-file"></i> View Current Document
+                                            </a>
+                                        <% } %>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="removeEvidence" name="removeEvidence">
+                                            <label class="form-check-label" for="removeEvidence">
+                                                Remove current evidence
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <!-- Related Booking -->
+                        <div class="mb-4">
+                            <label for="booking" class="form-label">Related Booking (Optional)</label>
+                            <select class="form-select" id="booking" name="booking">
+                                <option value="">Select a booking</option>
+                                <% bookings.forEach(booking => { %>
+                                    <option value="<%= booking._id %>" <%= report.booking && report.booking.equals(booking._id) ? 'selected' : '' %>>
+                                        Booking #<%= booking._id.toString().slice(-6) %> - 
+                                        <%= new Date(booking.checkIn).toLocaleDateString() %> to 
+                                        <%= new Date(booking.checkOut).toLocaleDateString() %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="/reports/<%= report._id %>" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Report</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    border: none;
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.form-control, .form-select {
+    border-radius: 10px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+}
+
+.btn {
+    border-radius: 10px;
+    padding: 0.5rem 1.5rem;
+}
+
+.current-evidence img {
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+</style>
+
+<script>
+// File size validation
+document.getElementById('evidence').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (file && file.size > maxSize) {
+        alert('File size exceeds 5MB limit. Please choose a smaller file.');
+        this.value = '';
+    }
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const description = document.getElementById('description').value.trim();
+    
+    if (description.length < 10) {
+        e.preventDefault();
+        alert('Description must be at least 10 characters long.');
+    }
+});
+</script> 

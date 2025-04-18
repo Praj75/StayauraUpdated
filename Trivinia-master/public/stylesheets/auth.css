@@ -1,0 +1,75 @@
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 2rem 0;
+}
+.auth-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.auth-header {
+    background: #4a90e2;
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+.auth-body {
+    padding: 2rem;
+}
+.auth-form .form-control {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e1e1e1;
+}
+.auth-form .form-control:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+.btn-auth {
+    background: #4a90e2;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-auth:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+}
+.auth-footer {
+    text-align: center;
+    padding: 1rem;
+    border-top: 1px solid #e1e1e1;
+}
+.social-login {
+    margin: 1.5rem 0;
+}
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+.social-btn:hover {
+    transform: translateY(-2px);
+}
+.google-btn {
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    color: #333;
+}
+.facebook-btn {
+    background: #3b5998;
+    color: white;
+} 
