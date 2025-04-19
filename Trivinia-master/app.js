@@ -139,13 +139,13 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
+app.use("/user", userRouter);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
-app.use("/user", userRouter);
 app.use("/payment", paymentRouter);
 app.use("/bookings", bookingRouter);
 app.use('/chatbot', chatbotRoutes);
-app.use('/', pagesRoutes);
+app.use('/pages', pagesRoutes);
 
 // Add redirect from /login to /user/login
 app.get("/login", (req, res) => {
@@ -157,6 +157,7 @@ app.use("/receipts", express.static(path.join(__dirname, "receipts")));
 
 // 404 handler with better error message
 app.all("*", (req, res) => {
+    console.log("404 - Route not found:", req.originalUrl);
     res.status(404).render("listings/error", { 
         message: "Page Not Found!",
         statusCode: 404,

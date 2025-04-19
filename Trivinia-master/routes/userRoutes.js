@@ -5,10 +5,17 @@ const Booking = require("../models/booking");
 const Listing = require("../models/listing");
 const User = require("../models/users");
 const passport = require("passport");
+const wrapAsync = require('../utils/wrapAsync');
 
 // Debug middleware
 router.use((req, res, next) => {
     console.log("User Routes:", req.method, req.originalUrl);
+    next();
+});
+
+// Debug middleware for all routes
+router.use((req, res, next) => {
+    console.log(`User Route Hit: ${req.method} ${req.originalUrl}`);
     next();
 });
 
@@ -43,7 +50,6 @@ router.post("/login",
     }),
     (req, res) => {
         req.flash('success', `Welcome back, ${req.user.username}!`);
-        // Always redirect to /listings after login
         res.redirect('/listings');
     }
 );
@@ -56,7 +62,6 @@ router.get("/signup", (req, res) => {
     }
     res.render("users/signup", { 
         title: "Sign Up",
-        csrfToken: req.csrfToken(),
         messages: {
             error: req.flash('error'),
             success: req.flash('success'),
@@ -77,13 +82,11 @@ router.post("/signup", async (req, res) => {
         req.login(registeredUser, (err) => {
             if (err) return next(err);
             req.flash("success", "Welcome!");
-            const redirectUrl = req.session.redirectUrl || "/listings";
-            delete req.session.redirectUrl;
-            res.redirect(redirectUrl);
+            res.redirect("/listings");
         });
     } catch (e) {
         req.flash("error", e.message);
-        res.redirect("/signup");
+        res.redirect("/user/signup");
     }
 });
 
@@ -92,7 +95,7 @@ const handleProfile = async (req, res) => {
     try {
         if (!req.user) {
             req.flash("error", "User not found");
-            return res.redirect("/login");
+            return res.redirect("/user/login");
         }
 
         // Get user's bookings and listings
@@ -211,5 +214,125 @@ router.post("/delete-account", isLoggedIn, async (req, res) => {
         res.redirect("/user/settings");
     }
 });
+
+// Logout routes - handle both GET and POST
+router.get("/logout", handleLogout);
+router.post("/logout", handleLogout);
+
+// Logout handler function
+function handleLogout(req, res, next) {
+    console.log("Logout route hit - Method:", req.method);
+    console.log("Is authenticated:", req.isAuthenticated());
+    console.log("User:", req.user);
+    
+    if (!req.isAuthenticated()) {
+        console.log("User not authenticated");
+        req.flash('error', 'You must be logged in to log out.');
+        return res.redirect('/user/login');
+    }
+    
+    const username = req.user.username;
+    console.log(`Logging out user: ${username}`);
+    
+    // Set flash message before destroying session
+    req.flash('success', `Goodbye, ${username}! You have been successfully logged out.`);
+    
+    req.logout((err) => {
+        if (err) {
+            console.error('Error during logout:', err);
+            return next(err);
+        }
+        
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Error destroying session:', err);
+                return next(err);
+            }
+            
+            res.clearCookie('connect.sid');
+            res.redirect('/user/login');
+        });
+    });
+}
+
+// Wishlist Routes
+router.get('/wishlist', isLoggedIn, wrapAsync(async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id)
+            .populate({
+                path: 'wishlist',
+                populate: {
+                    path: 'owner',
+                    select: 'username email'
+                }
+            });
+
+        if (!user) {
+            req.flash('error', 'User not found');
+            return res.redirect('/');
+        }
+
+        res.render('users/wishlist', { 
+            wishlist: user.wishlist || [],
+            title: 'My Wishlist'
+        });
+    } catch (error) {
+        console.error('Error fetching wishlist:', error);
+        req.flash('error', 'Failed to load wishlist');
+        res.redirect('/');
+    }
+}));
+
+// Add to wishlist
+router.post('/wishlist/:listingId', isLoggedIn, wrapAsync(async (req, res) => {
+    try {
+        const { listingId } = req.params;
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if listing is already in wishlist
+        if (user.wishlist && user.wishlist.includes(listingId)) {
+            return res.status(400).json({ error: 'Listing already in wishlist' });
+        }
+
+        // Add to wishlist
+        if (!user.wishlist) {
+            user.wishlist = [];
+        }
+        user.wishlist.push(listingId);
+        await user.save();
+
+        res.json({ success: true, message: 'Added to wishlist' });
+    } catch (error) {
+        console.error('Error adding to wishlist:', error);
+        res.status(500).json({ error: 'Failed to add to wishlist' });
+    }
+}));
+
+// Remove from wishlist
+router.delete('/wishlist/:listingId', isLoggedIn, wrapAsync(async (req, res) => {
+    try {
+        const { listingId } = req.params;
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Remove from wishlist
+        if (user.wishlist) {
+            user.wishlist = user.wishlist.filter(id => id.toString() !== listingId);
+            await user.save();
+        }
+
+        res.json({ success: true, message: 'Removed from wishlist' });
+    } catch (error) {
+        console.error('Error removing from wishlist:', error);
+        res.status(500).json({ error: 'Failed to remove from wishlist' });
+    }
+}));
 
 module.exports = router; 

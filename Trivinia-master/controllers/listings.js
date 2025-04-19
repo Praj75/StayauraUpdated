@@ -73,8 +73,11 @@ module.exports.getListingById = async (req, res) => {
             return res.redirect("/listings");
         }
 
-        // Ensure currUser is properly passed to the view
-        const currUser = req.user || null;
+        // Get current user with populated wishlist if logged in
+        let currUser = null;
+        if (req.user) {
+            currUser = await User.findById(req.user._id).populate('wishlist');
+        }
 
         res.render("listings/show.ejs", { 
             listing,

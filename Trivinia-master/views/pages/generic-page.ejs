@@ -1,51 +1,49 @@
 <%- layout('layouts/boilerplate') %>
-<%# title is already set by the route %>
 
 <div class="container mt-5 mb-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
-                </ol>
-            </nav>
-            
-            <h1 class="mb-4"><%= title %></h1>
-            
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="content">
-                        <p class="lead"><%= description %></p>
-                        <p>This page is currently under construction and will be available soon.</p>
-                        
-                        <div class="alert alert-info mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="text-center mb-4"><%= title %></h1>
+                    
+                    <% if (typeof description !== 'undefined') { %>
+                        <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            This is a placeholder page. Please check back later for updated content.
+                            <%= description %>
                         </div>
+                    <% } %>
+                    
+                    <div class="content mt-4">
+                        <p>This page is currently under development. Please check back later for more information.</p>
                         
                         <div class="mt-4">
-                            <a href="/pages/help-center" class="btn btn-primary">
-                                <i class="fas fa-question-circle me-2"></i>Visit Help Center
-                            </a>
+                            <h4>What you can do:</h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i class="fas fa-home me-2"></i>
+                                    <a href="/">Return to Homepage</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fas fa-search me-2"></i>
+                                    <a href="/listings">Browse Listings</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fas fa-question-circle me-2"></i>
+                                    <a href="/pages/help-center">Visit Help Center</a>
+                                </li>
+                            </ul>
                         </div>
-
-                        <% if (lastUpdated) { %>
-                            <div class="mt-4 text-muted small">
-                                <i class="fas fa-clock me-1"></i>
-                                Last updated: <%= new Date(lastUpdated).toLocaleDateString() %>
-                            </div>
-                        <% } %>
                     </div>
-                </div>
-            </div>
-            
-            <div class="mt-4">
-                <h4>Related Pages</h4>
-                <div class="list-group">
-                    <a href="/pages/help-center" class="list-group-item list-group-item-action">Help Center</a>
-                    <a href="/pages/safety-information" class="list-group-item list-group-item-action">Safety Information</a>
-                    <a href="/pages/report-a-concern" class="list-group-item list-group-item-action">Report a Concern</a>
+                    
+                    <% if (typeof lastUpdated !== 'undefined') { %>
+                        <div class="mt-4 text-muted">
+                            <small>
+                                <i class="fas fa-clock me-1"></i>
+                                Last updated: <%= new Date(lastUpdated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                            </small>
+                        </div>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -54,36 +52,41 @@
 
 <style>
 .card {
-    border-radius: 15px;
-    border: none;
-}
-
-.breadcrumb {
-    background-color: transparent;
-    padding-left: 0;
-}
-
-.breadcrumb-item a {
-    color: #0d6efd;
-    text-decoration: none;
-}
-
-.breadcrumb-item.active {
-    color: #6c757d;
+    border-radius: var(--radius-md);
+    overflow: hidden;
 }
 
 .alert {
-    border-radius: 10px;
+    border-radius: var(--radius-md);
+    border: none;
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
 }
 
 .list-group-item {
-    border-radius: 8px;
-    margin-bottom: 5px;
-    transition: all 0.2s ease;
+    border: none;
+    padding: 1rem;
+    transition: all var(--transition-fast);
 }
 
 .list-group-item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--primary-light);
     transform: translateX(5px);
+}
+
+.list-group-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.list-group-item:hover a {
+    color: var(--primary-dark);
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
 }
 </style> 

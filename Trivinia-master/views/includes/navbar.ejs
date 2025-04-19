@@ -65,9 +65,9 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
                     </ul>
                 </div>
             <% } else { %>
-                <div class="nav-links">
-                    <a class="nav-link" href="/user/login">Login</a>
-                    <a class="nav-link" href="/user/signup">Sign Up</a>
+                <div class="nav-links auth-links">
+                    <a class="nav-link login-link" href="/user/login">Login</a>
+                    <a class="nav-link signup-link" href="/user/signup">Sign Up</a>
                 </div>
             <% } %>
         </div>
@@ -80,9 +80,12 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
         background-color: #FFFFFF !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         padding: 0.8rem 2rem;
-        position: sticky;
+        position: fixed;
         top: 0;
+        left: 0;
+        right: 0;
         z-index: 1000;
+        height: 80px;
     }
 
     .container-fluid {
@@ -91,6 +94,9 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
         align-items: center;
         padding: 0;
         gap: 2rem;
+        max-width: 1440px;
+        margin: 0 auto;
+        height: 100%;
     }
 
     /* Left section styles */
@@ -100,7 +106,8 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
         font-size: 1.8rem;
         color: #FF385C;
         letter-spacing: -0.5px;
-        margin-right: 0;
+        margin-right: 2rem;
+        text-decoration: none;
     }
 
     .navbar-brand:hover {
@@ -110,19 +117,18 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
     .nav-links {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-left: 0.5rem;
+        gap: 1rem;
     }
 
     .nav-link {
         font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
+        font-weight: 500;
         font-size: 0.95rem;
         color: #222222 !important;
-        padding: 0.5rem 0.75rem !important;
+        padding: 0.5rem 1rem !important;
         transition: all 0.2s ease;
         text-decoration: none;
-        position: relative;
+        border-radius: 50px;
     }
 
     .nav-link:hover, .nav-link.active {
@@ -147,10 +153,8 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
 
     /* Center section styles */
     .search-container {
-        flex: 1;
-        max-width: 480px;
-        margin: 0 auto;
-        padding: 0 1rem;
+        flex: 0 1 480px;
+        margin: 0 2rem;
     }
 
     .search-form {
@@ -161,6 +165,7 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
         display: flex;
         align-items: center;
         background-color: #F7F7F7;
+        border: 1px solid #DDDDDD;
         border-radius: 50px;
         padding: 0.5rem;
         transition: all 0.3s ease;
@@ -168,7 +173,8 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
 
     .search-wrapper:focus-within {
         background-color: #FFFFFF;
-        box-shadow: 0 0 0 2px #FF385C40;
+        border-color: #FF385C;
+        box-shadow: 0 0 0 1px #FF385C;
     }
 
     .search-input {
@@ -192,12 +198,12 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
     .search-btn:hover {
         background-color: #E31C5F;
-        transform: translateY(-1px);
     }
 
     /* Right section styles */
@@ -272,25 +278,98 @@ const user = typeof currUser !== 'undefined' ? currUser : null;
         background-color: #FFF5F5;
     }
 
+    .auth-links {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-left: auto;
+    }
+
+    .login-link, .signup-link {
+        font-weight: 500;
+        padding: 0.5rem 1.2rem !important;
+        border-radius: 50px;
+        transition: all 0.2s ease;
+    }
+
+    .login-link {
+        color: #222222 !important;
+    }
+
+    .login-link:hover {
+        background-color: #F7F7F7;
+    }
+
+    .signup-link {
+        background-color: #FF385C;
+        color: white !important;
+        border: none;
+    }
+
+    .signup-link:hover {
+        background-color: #E31C5F;
+    }
+
+    .signup-link::after, .login-link::after {
+        display: none;
+    }
+
     @media (max-width: 992px) {
         .navbar {
             padding: 0.8rem 1rem;
+            height: auto;
         }
 
         .container-fluid {
             flex-wrap: wrap;
             gap: 1rem;
+            padding: 0 1rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            margin-right: 1rem;
         }
 
         .search-container {
             order: 3;
             flex: 1 1 100%;
-            margin: 1rem 0;
-            padding: 0;
+            margin: 0.5rem 0;
         }
 
         .nav-links {
-            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.4rem 0.8rem !important;
+            font-size: 0.9rem;
+        }
+
+        .auth-links {
+            margin-left: 0;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .navbar {
+            padding: 0.5rem;
+        }
+
+        .container-fluid {
+            padding: 0 0.5rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.3rem;
+        }
+
+        .search-btn {
+            padding: 0.5rem 1rem;
+        }
+
+        .login-link, .signup-link {
+            padding: 0.4rem 1rem !important;
         }
     }
 </style>

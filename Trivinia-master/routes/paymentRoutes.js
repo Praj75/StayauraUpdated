@@ -12,7 +12,7 @@ const Listing = require('../models/listing');
 const Booking = require('../models/booking');
 const { ExpressError } = require('../utils/ExpressError');
 const wrapAsync = require('../utils/wrapAsync');
-const { sendEmail, transporter } = require('../utils/email');
+const { sendEmail, transporter, sendBookingConfirmationEmail } = require('../utils/email');
 const User = require('../models/users');
 const { isLoggedIn } = require('../middleware');
 
@@ -75,39 +75,15 @@ async function checkDateAvailability(listing, checkIn, checkOut) {
     }
 }
 
-// Initialize Razorpay with error handling
-let razorpay;
-try {
-    // Check if environment variables are loaded
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-        console.error('Razorpay keys not found in environment variables');
-        throw new Error('Razorpay keys not configured');
-    }
-    
-    // Create Razorpay instance
-    razorpay = new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID,
-        key_secret: process.env.RAZORPAY_KEY_SECRET
-    });
-    
-    // Test the Razorpay connection
-    razorpay.orders.all({ count: 1 })
-        .then(response => {
-            // Connection successful
-            console.log('Razorpay connection successful');
-        })
-        .catch(error => {
-            // Connection failed
-            console.error('Razorpay connection failed:', error.message || 'Unknown error');
-            if (error.statusCode === 401) {
-                console.error('Authentication failed. Please check your API keys.');
-            }
-            razorpay = null;
-        });
-    
-} catch (error) {
-    console.error('Razorpay initialization error:', error.message || 'Unknown error');
-    razorpay = null;
+// Initialize Razorpay with proper error handling
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+});
+
+// Verify Razorpay configuration
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    console.error('❌ Razorpay API keys are missing in environment variables');
 }
 
 // Verify email configuration
@@ -119,71 +95,62 @@ transporter.verify(function (error, success) {
     }
 });
 
-// 🔑 Get Razorpay Key
-router.get("/getRazorPayKey", (req, res) => {
-    if (USE_MOCK_PAYMENT || !process.env.RAZORPAY_KEY_ID) {
-        // Return a mock key that won't try to make real API calls
-        res.json({ key: 'rzp_test_mock', mock: true });
-    } else {
-        res.json({ key: process.env.RAZORPAY_KEY_ID });
-    }
+// Get Razorpay Key
+router.get('/getRazorPayKey', (req, res) => {
+    res.json({ key: process.env.RAZORPAY_KEY_ID });
 });
 
-// Create order endpoint
+// Create Order with better error handling
 router.post('/create-order', isLoggedIn, async (req, res) => {
     try {
         const { listingId, checkIn, checkOut, guests, totalPrice } = req.body;
-        
+
         // Validate required fields
         if (!listingId || !checkIn || !checkOut || !guests || !totalPrice) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Find the listing
+        // Check if listing exists
         const listing = await Listing.findById(listingId);
         if (!listing) {
             return res.status(404).json({ error: 'Listing not found' });
         }
 
-        // Check if dates are available
-        const isAvailable = await checkDateAvailability(listing, checkIn, checkOut);
-        if (!isAvailable) {
-            return res.status(400).json({ error: 'Selected dates are not available' });
-        }
-
-        // Check if Razorpay is properly initialized
-        if (!razorpay) {
-            return res.status(500).json({ 
-                error: 'Payment service is not configured properly. Please contact support.',
-                details: 'Razorpay initialization failed. Please check your API keys in the .env file. The keys may be invalid or expired.'
-            });
-        }
-
-        // Create Razorpay order
-        const order = await razorpay.orders.create({
-            amount: totalPrice * 100, // Convert to paise
+        // Create Razorpay order with proper error handling
+        const options = {
+            amount: Math.round(totalPrice * 100), // amount in paise
             currency: 'INR',
-            receipt: `receipt_${Date.now()}`
-        });
+            receipt: `booking_${Date.now()}`,
+            payment_capture: 1
+        };
+
+        const order = await razorpay.orders.create(options);
+        
+        if (!order) {
+            throw new Error('Failed to create Razorpay order');
+        }
+
+        // Store booking details in session
+        req.session.bookingDetails = {
+            listingId,
+            checkIn,
+            checkOut,
+            guests,
+            totalPrice,
+            orderId: order.id
+        };
 
         res.json({
             orderId: order.id,
             amount: order.amount,
             currency: order.currency,
-            key: process.env.RAZORPAY_KEY_ID
+            key: process.env.RAZORPAY_KEY_ID // Send key to client
         });
     } catch (error) {
-        // Provide more detailed error message to the client
-        if (error.statusCode === 401) {
-            return res.status(500).json({ 
-                error: 'Payment service authentication failed. Please contact support.',
-                details: 'Invalid Razorpay API keys. The keys may be invalid or expired. Please check your key_id and key_secret in the .env file.'
-            });
-        }
-        
-        res.status(500).json({ 
-            error: 'Failed to create order',
-            details: error.message || 'Unknown error occurred'
+        console.error('Create order error:', error);
+        res.status(error.statusCode || 500).json({ 
+            error: error.message || 'Failed to create order',
+            details: error.description || error.message
         });
     }
 });
@@ -374,130 +341,113 @@ async function sendBookingConfirmationEmails(booking, listing, user, host) {
 }
 
 // Payment Success Route
-router.post('/payment-success', isLoggedIn, async (req, res) => {
+router.post('/payment-success', isLoggedIn, wrapAsync(async (req, res) => {
     try {
-        const { 
-            razorpay_payment_id, 
-            razorpay_order_id, 
-            razorpay_signature,
-            listingId,
-            checkIn,
-            checkOut,
-            guests,
-            totalPrice
+        const {
+            razorpay_payment_id,
+            razorpay_order_id,
+            razorpay_signature
         } = req.body;
 
-        // Validate required fields
-        if (!listingId || !checkIn || !checkOut || !guests || !totalPrice || !razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
-
-        // Verify Razorpay signature
+        // Verify payment signature using the correct environment variable
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSignature = crypto
             .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
             .update(body.toString())
             .digest("hex");
 
+        if (!process.env.RAZORPAY_KEY_SECRET) {
+            throw new ExpressError('Razorpay secret key is not configured', 500);
+        }
+
         if (expectedSignature !== razorpay_signature) {
-            return res.status(400).json({ error: 'Invalid payment signature' });
+            throw new ExpressError('Invalid payment signature', 400);
+        }
+
+        // Get booking details from session
+        const bookingDetails = req.session.bookingDetails;
+        if (!bookingDetails) {
+            throw new ExpressError('Booking details not found', 400);
         }
 
         // Find the listing
-        const listing = await Listing.findById(listingId);
+        const listing = await Listing.findById(bookingDetails.listingId)
+            .populate('owner')
+            .exec();
+            
         if (!listing) {
-            return res.status(404).json({ error: 'Listing not found' });
+            throw new ExpressError('Listing not found', 404);
         }
 
-        // Create booking
+        // Generate a unique booking ID
+        const bookingId = 'BK' + Date.now() + Math.random().toString(36).substr(2, 4);
+
+        // Create new booking with all required fields
         const booking = new Booking({
+            bookingId: bookingId, // Add unique booking ID
+            listing: bookingDetails.listingId,
             user: req.user._id,
-            author: req.user._id,
-            listing: listingId,
-            checkIn,
-            checkOut,
-            guests,
-            totalAmount: totalPrice,
-            paymentMode: 'razorpay',
-            bookingId: razorpay_payment_id,
-            orderId: razorpay_order_id,
+            checkIn: new Date(bookingDetails.checkIn),
+            checkOut: new Date(bookingDetails.checkOut),
+            guests: bookingDetails.guests,
+            totalAmount: bookingDetails.totalPrice, // Changed from totalPrice to totalAmount
             paymentId: razorpay_payment_id,
-            status: 'confirmed',
-            paymentStatus: 'paid'
+            orderId: razorpay_order_id,
+            paymentMode: 'razorpay', // Add payment mode
+            status: 'confirmed'
         });
 
-        // Save booking
+        // Save the booking
         await booking.save();
 
-        // Update listing's bookedDates
+        // Update listing's booked dates
         listing.bookedDates.push({
             bookingId: booking._id,
-            checkIn,
-            checkOut
+            checkIn: new Date(bookingDetails.checkIn),
+            checkOut: new Date(bookingDetails.checkOut)
         });
+
         await listing.save();
 
         // Send confirmation emails
-        try {
-            const user = await User.findById(req.user._id);
-            const host = await User.findById(listing.owner);
-            
-            // Prepare email data
-            const emailData = {
-                guestName: user.username,
-                listingTitle: listing.title,
-                checkIn: booking.checkIn,
-                checkOut: booking.checkOut,
-                totalPrice: booking.totalAmount,
-                bookingId: booking._id,
-                orderId: booking.orderId,
-                paymentId: booking.paymentId,
-                paymentMode: booking.paymentMode,
-                status: booking.status,
-                hostName: host.username
-            };
+        await sendBookingConfirmationEmails(
+            booking,
+            listing,
+            req.user,
+            listing.owner
+        );
 
-            // Send confirmation email to guest
-            await sendBookingConfirmation(user.email, emailData, booking);
-
-            // Send notification to host
-            await sendHostNotification(host.email, {
-                hostName: host.username,
-                guestName: user.username,
-                title: listing.title,
-                checkIn: new Date(booking.checkIn).toLocaleDateString('en-US', { 
-                    weekday: 'short', 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                }),
-                checkOut: new Date(booking.checkOut).toLocaleDateString('en-US', { 
-                    weekday: 'short', 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                }),
-                amount: booking.totalAmount,
-                bookingId: booking._id,
-                orderId: booking.orderId,
-                paymentId: booking.paymentId,
-                status: booking.status
-            });
-        } catch (emailError) {
-            // Log email error but don't fail the booking
-            console.error('Failed to send confirmation emails:', emailError);
-        }
+        // Clear session data
+        delete req.session.bookingDetails;
+        delete req.session.paymentDetails;
 
         res.json({
             success: true,
-            message: 'Booking confirmed successfully',
             bookingId: booking._id,
-            redirectUrl: '/bookings'
+            message: 'Payment successful and booking confirmed!'
         });
+
     } catch (error) {
-        res.status(500).json({ error: 'Failed to process booking' });
+        console.error('Payment success error:', error);
+        res.status(error.statusCode || 500).json({
+            success: false,
+            error: error.message || 'Payment verification failed'
+        });
     }
-});
+}));
+
+// Helper function to get dates in range
+function getDatesInRange(startDate, endDate) {
+    const dates = [];
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+        dates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
+}
 
 // Handle booking cancellation and refund
 router.post('/cancel-booking', isLoggedIn, async (req, res) => {
@@ -514,8 +464,7 @@ router.post('/cancel-booking', isLoggedIn, async (req, res) => {
         }
 
         // Check if user is authorized to cancel
-        if (booking.user.toString() !== req.user._id.toString() && 
-            booking.author.toString() !== req.user._id.toString()) {
+        if (booking.user.toString() !== req.user._id.toString()) {
             return res.status(403).json({ error: 'Not authorized to cancel this booking' });
         }
 

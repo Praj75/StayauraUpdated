@@ -1,209 +1,197 @@
-<%- layout('layouts/boilerplate') %>
+<%- include('../includes/header') %>
+<%- include('../includes/navbar') %>
 
-<div class="container my-5">
-    <h1 class="mb-4">My Wishlist</h1>
+<style>
+    .page-heading {
+        margin-top: 5rem;
+        margin-bottom: 2rem;
+        color: #484848;
+        font-weight: 600;
+    }
 
-    <% if (listings && listings.length > 0) { %>
-        <div class="row g-4" id="wishlist-listings-container"> 
-            <% listings.forEach(listing => { %>
-                <div class="col-md-6 col-lg-4 listing-card-wrapper" data-listing-id="<%= listing._id %>">
-                    <a href="/listings/<%= listing._id %>" class="listing-link">
-                        <div class="card h-100">
-                            <div class="card-img-container" style="position: relative;">
-                                <% 
-                                let imageUrl = '/images/default-property.jpg';
-                                if (listing.images && listing.images.length > 0) {
-                                    // Skip any images that contain 'logo' in their path
-                                    const propertyImage = listing.images.find(img => {
-                                        const imgPath = typeof img === 'string' ? img : (img.url || '');
-                                        return !imgPath.toLowerCase().includes('logo');
-                                    });
-                                    
-                                    if (propertyImage) {
-                                        imageUrl = typeof propertyImage === 'string' ? propertyImage : propertyImage.url;
-                                    }
-                                }
-                                %>
-                                <img src="<%= imageUrl %>" 
-                                     alt="<%= listing.title %>"
-                                     class="card-img-top" 
-                                     style="height: 220px; object-fit: cover;"
-                                     onerror="this.src='/images/default-property.jpg';">
-                                
-                                <div class="card-price">
-                                    ₹<%= listing.price.toLocaleString("en-IN") %> <span style="font-weight: 400; color: #555;">/ night</span>
-                                </div>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title mb-2"><%= listing.title %></h5>
-                                <p class="card-text text-muted small mb-3">
-                                    <i class="fas fa-map-marker-alt me-1"></i>
-                                    <% 
-                                    let displayLocation = listing.location;
-                                    if (listing.city && listing.country) {
-                                        displayLocation = `${listing.city}, ${listing.country}`;
-                                    } else if (listing.city) {
-                                        displayLocation = listing.city;
-                                    }
-                                    %>
-                                    <%= displayLocation %>
-                                </p>
-                                <div class="mt-auto d-flex justify-content-between align-items-center">
-                                    <span class="text-muted small">Hosted by <%= listing.owner.username %></span>
-                                </div>
+    .card {
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #484848;
+    }
+
+    .location-text {
+        color: #717171;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .price-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #484848;
+        margin-bottom: 1.25rem;
+    }
+
+    .price-unit {
+        font-size: 0.9rem;
+        color: #717171;
+        font-weight: normal;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+    }
+
+    .empty-state {
+        margin-top: 5rem;
+        text-align: center;
+        padding: 3rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #FF385C;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state h3 {
+        color: #484848;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        color: #717171;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .page-heading {
+            margin-top: 4rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container">
+    <h1 class="page-heading">My Wishlist</h1>
+    
+    <% if (wishlist && wishlist.length > 0) { %>
+        <div class="row">
+            <% wishlist.forEach(listing => { %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card">
+                        <% if (listing.images && listing.images.length > 0) { %>
+                            <img src="<%= listing.images[0].url %>" class="card-img-top" alt="<%= listing.title %>">
+                        <% } else { %>
+                            <img src="/images/default-listing.jpg" class="card-img-top" alt="Default listing image">
+                        <% } %>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title"><%= listing.title %></h5>
+                            <p class="location-text">
+                                <i class="fas fa-map-marker-alt"></i> <%= listing.location %>
+                            </p>
+                            <p class="price-text">
+                                ₹<%= (listing.price/100).toLocaleString('en-IN', { maximumFractionDigits: 0 }) %>
+                                <span class="price-unit">/ night</span>
+                            </p>
+                            <div class="btn-group">
+                                <a href="/listings/<%= listing._id %>" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                <button class="btn btn-outline-danger remove-wishlist" data-listing-id="<%= listing._id %>">
+                                    <i class="fas fa-heart-broken"></i> Remove
+                                </button>
                             </div>
                         </div>
-                    </a>
-                    <button class="card-save-btn liked" data-listing-id="<%= listing._id %>" title="Remove from Wishlist">
-                        <i class="fas fa-heart"></i>
-                    </button>
+                    </div>
                 </div>
             <% }); %>
         </div>
     <% } else { %>
-        <div class="text-center py-5">
-            <i class="far fa-heart fa-3x text-muted mb-3"></i>
-            <p class="text-muted fs-5 mb-4">Your wishlist is empty</p>
-            <a href="/listings" class="btn btn-primary">Explore Listings</a>
+        <div class="empty-state">
+            <i class="fas fa-heart"></i>
+            <h3>Your Wishlist is Empty</h3>
+            <p>Start saving your favorite places!</p>
+            <a href="/listings" class="btn btn-primary">
+                <i class="fas fa-search"></i> Explore Listings
+            </a>
         </div>
     <% } %>
 </div>
 
-<%# Use the same CSS as index for the like button position/style %>
-<style>
-    .listing-card-wrapper {
-        position: relative; /* Needed for absolute positioning of the button */
-    }
-    .listing-link {
-        text-decoration: none;
-        color: inherit;
-        display: block;
-    }
-    .card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .card-img-container {
-        position: relative;
-        overflow: hidden;
-        height: 220px;
-        width: 100%;
-        background-color: #f5f5f5;
-        border-radius: 12px 12px 0 0;
-    }
-    .card-img-top {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-    .card-price {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-weight: 600;
-        color: #222;
-    }
-    .card-save-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: rgba(255, 255, 255, 0.9);
-        color: #222;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10; /* Ensure it's above the link */
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(5px);
-        transition: all 0.3s ease;
-        border: none; 
-        cursor: pointer; 
-    }
-    .card-save-btn:hover {
-        background: #f0f0f0;
-        transform: scale(1.1);
-    }
-    .card-save-btn.liked {
-        color: #FF385C; /* Red color when liked */
-    }
-    .card-save-btn.liked:hover {
-        background: rgba(255, 56, 92, 0.1); 
-    }
-    .card-save-btn i {
-         pointer-events: none; 
-    }
-</style>
-
-<%# Use similar JS for the like button, but remove the card when unliked %>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const wishlistContainer = document.getElementById('wishlist-listings-container');
-
-    if (wishlistContainer) {
-        wishlistContainer.addEventListener('click', async function(event) {
-            const likeButton = event.target.closest('.card-save-btn');
-            
-            if (!likeButton) return;
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            const listingId = likeButton.dataset.listingId;
-            const listingCardWrapper = likeButton.closest('.listing-card-wrapper');
-
-            likeButton.disabled = true;
-            likeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-            try {
-                const response = await fetch(`/listings/${listingId}/like`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to update wishlist');
+document.querySelectorAll('.remove-wishlist').forEach(button => {
+    button.addEventListener('click', async function() {
+        const listingId = this.dataset.listingId;
+        const card = this.closest('.col-12');
+        
+        try {
+            const response = await fetch(`/user/wishlist/${listingId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
+            });
 
-                const result = await response.json();
+            if (response.ok) {
+                // Fade out animation
+                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
                 
-                if (result.success && !result.liked) {
-                    listingCardWrapper.style.transition = 'opacity 0.5s ease';
-                    listingCardWrapper.style.opacity = '0';
-                    setTimeout(() => {
-                        listingCardWrapper.remove();
-                        if (wishlistContainer.children.length === 0) {
-                            wishlistContainer.innerHTML = `
-                                <div class="col-12 text-center py-5">
-                                    <i class="far fa-heart fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted fs-5 mb-4">Your wishlist is empty</p>
-                                    <a href="/listings" class="btn btn-primary">Explore Listings</a>
-                                </div>
-                            `;
-                        }
-                    }, 500);
-                } else {
-                    throw new Error('Failed to remove from wishlist');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                likeButton.disabled = false;
-                likeButton.innerHTML = '<i class="fas fa-heart"></i>';
-                alert('Could not remove item from wishlist. Please try again.');
+                setTimeout(() => {
+                    card.remove();
+                    
+                    // Check if wishlist is empty after removal
+                    const remainingItems = document.querySelectorAll('.col-12').length;
+                    if (remainingItems === 0) {
+                        location.reload(); // Reload to show empty state
+                    }
+                }, 300);
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Failed to remove from wishlist');
             }
-        });
-    }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to remove from wishlist');
+        }
+    });
 });
-</script> 
+</script>
+
+<%- include('../includes/footer') %>
+

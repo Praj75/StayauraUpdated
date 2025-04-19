@@ -1,210 +1,311 @@
-<% layout('./layouts/boilerplate') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Stayaura</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --airbnb-pink: #FF385C;
+            --airbnb-dark: #222222;
+            --airbnb-light: #F7F7F7;
+        }
 
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">Your Bookings</h1>
-            
-            <div id="alertContainer"></div>
+        body {
+            background-color: var(--airbnb-light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-top: 80px; /* Match navbar height */
+            min-height: calc(100vh - 80px); /* Ensure full height minus navbar */
+        }
+
+        .bookings-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--airbnb-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .booking-card {
+            background: white;
+            border: 1px solid #ebebeb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .booking-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--airbnb-dark);
+            margin: 0;
+        }
+
+        .booking-status {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background-color: #00C851;
+            color: white;
+        }
+
+        .status-pending {
+            background-color: #ffbb33;
+            color: white;
+        }
+
+        .status-cancelled {
+            background-color: #ff4444;
+            color: white;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            color: #717171;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: var(--airbnb-dark);
+            font-weight: 500;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ebebeb;
+        }
+
+        .btn-action {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            background-color: var(--airbnb-pink);
+            color: white;
+            border: none;
+        }
+
+        .btn-view:hover {
+            background-color: #e31c5f;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: white;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+
+        .btn-cancel:hover {
+            background-color: #ff4444;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #717171;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--airbnb-pink);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: var(--airbnb-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-explore {
+            background-color: var(--airbnb-pink);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-explore:hover {
+            background-color: #e31c5f;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .bookings-container {
+                padding: 1rem;
+            }
+
+            .booking-details {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .booking-actions {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../includes/navbar') %>
+
+    <div class="main-content">
+        <div class="bookings-container">
+            <h1 class="page-title">My Bookings</h1>
             
             <% if (bookings && bookings.length > 0) { %>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    <% bookings.forEach(booking => { %>
-                        <div class="col">
-                            <div class="card h-100 shadow-sm hover-shadow">
-                                <% if (booking.listing) { %>
-                                    <% if (booking.listing.images && booking.listing.images.length > 0) { %>
-                                        <img src="<%= booking.listing.images[0].url %>" class="card-img-top" alt="<%= booking.listing.title %>" style="height: 200px; object-fit: cover;">
-                                    <% } else { %>
-                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                            <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
-                                        </div>
+                <% bookings.forEach(booking => { %>
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <h2 class="booking-title"><%= booking.listing.title %></h2>
+                            <span class="booking-status status-<%= booking.status.toLowerCase() %>">
+                                <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                            </span>
+                        </div>
+                        
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Check-in</span>
+                                <span class="detail-value">
+                                    <%= new Date(booking.checkIn).toLocaleDateString('en-IN', { 
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    }) %>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Check-out</span>
+                                <span class="detail-value">
+                                    <%= new Date(booking.checkOut).toLocaleDateString('en-IN', { 
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    }) %>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Guests</span>
+                                <span class="detail-value"><%= booking.guests %> guests</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Total Price</span>
+                                <span class="detail-value">
+                                    ₹<%= (booking.totalAmount/100).toLocaleString('en-IN', { maximumFractionDigits: 0 }) %>
+                                    <% if (booking.status === 'cancelled' && booking.paymentStatus === 'refunded') { %>
+                                        <span class="badge bg-warning">Refunded</span>
                                     <% } %>
-                                    
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-3"><%= booking.listing.title %></h5>
-                                        
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                            <span><%= new Date(booking.checkIn).toLocaleDateString() %> - <%= new Date(booking.checkOut).toLocaleDateString() %></span>
-                                        </div>
-                                        
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="fas fa-users text-primary me-2"></i>
-                                            <span><%= booking.guests %> guests</span>
-                                        </div>
-                                        
-                                        <div class="d-flex align-items-center mb-3">
-                                            <i class="fas fa-indian-rupee-sign text-primary me-2"></i>
-                                            <span>₹<%= booking.totalAmount %></span>
-                                        </div>
-                                        
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="badge <%= booking.status === 'confirmed' ? 'bg-success' : (booking.status === 'cancelled' ? 'bg-danger' : 'bg-warning') %>">
-                                                <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
-                                            </span>
-                                            <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary btn-sm">View Details</a>
-                                            <% if (booking.status === 'confirmed') { %>
-                                                <button class="btn btn-danger btn-sm" onclick="cancelBooking('<%= booking._id %>')">Cancel</button>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                <% } else { %>
-                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                        <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-3 text-muted">Listing No Longer Available</h5>
-                                        <p class="text-muted mb-3">This listing has been removed by the host.</p>
-                                        
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                            <span><%= new Date(booking.checkIn).toLocaleDateString() %> - <%= new Date(booking.checkOut).toLocaleDateString() %></span>
-                                        </div>
-                                        
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="fas fa-users text-primary me-2"></i>
-                                            <span><%= booking.guests %> guests</span>
-                                        </div>
-                                        
-                                        <div class="d-flex align-items-center mb-3">
-                                            <i class="fas fa-indian-rupee-sign text-primary me-2"></i>
-                                            <span>₹<%= booking.totalAmount %></span>
-                                        </div>
-                                        
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="badge bg-danger">Listing Removed</span>
-                                            <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary btn-sm">View Details</a>
-                                        </div>
-                                    </div>
-                                <% } %>
+                                </span>
                             </div>
                         </div>
-                    <% }); %>
-                </div>
+                        
+                        <div class="booking-actions">
+                            <a href="/bookings/<%= booking._id %>" class="btn-action btn-view">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <% if (booking.status !== 'cancelled') { %>
+                                <form action="/bookings/<%= booking._id %>/cancel" method="POST" class="d-inline" 
+                                      onsubmit="return confirm('Are you sure you want to cancel this booking? This action cannot be undone.');">
+                                    <button type="submit" class="btn-action btn-cancel">
+                                        <i class="fas fa-times"></i> Cancel Booking
+                                    </button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
             <% } else { %>
-                <div class="text-center py-5">
-                    <i class="fas fa-calendar-times text-muted mb-3" style="font-size: 4rem;"></i>
-                    <h3 class="text-muted">No bookings found</h3>
-                    <p class="text-muted">Start exploring and book your next stay!</p>
-                    <a href="/listings" class="btn btn-primary mt-3">Browse Listings</a>
+                <div class="empty-state">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>No Bookings Yet</h3>
+                    <p>You haven't made any bookings yet. Start exploring amazing places to stay!</p>
+                    <a href="/listings" class="btn-explore">Explore Listings</a>
                 </div>
             <% } %>
         </div>
     </div>
-</div>
 
-<style>
-.hover-shadow {
-    transition: all 0.3s ease;
-}
-
-.hover-shadow:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-}
-
-.card {
-    border: none;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.card-img-top {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-}
-
-.badge {
-    padding: 0.5em 1em;
-    font-weight: 500;
-}
-
-.btn-outline-primary {
-    border-width: 2px;
-    font-weight: 500;
-}
-
-.btn-outline-primary:hover {
-    background-color: #FF385C;
-    border-color: #FF385C;
-    color: white;
-}
-
-.text-primary {
-    color: #FF385C !important;
-}
-
-.bg-success {
-    background-color: #00A699 !important;
-}
-</style>
-
-<script>
-    function showFlashMessage(message, type = 'success') {
-        const alertContainer = document.getElementById('alertContainer');
-        if (!alertContainer) return;
-
-        // Clear any existing alerts
-        alertContainer.innerHTML = '';
-        
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
-        
-        alertContainer.appendChild(alertDiv);
-        
-        // Auto-remove after 3 seconds
-        setTimeout(() => {
-            if (alertDiv && alertDiv.parentNode) {
-                alertDiv.parentNode.removeChild(alertDiv);
-            }
-        }, 3000);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Show success message if present in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const successMessage = urlParams.get('success');
-        if (successMessage) {
-            showFlashMessage(decodeURIComponent(successMessage), 'success');
-            // Clean up URL
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    });
-
-    async function cancelBooking(bookingId) {
-        if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
-            return;
-        }
-
-        try {
-            const response = await fetch('/payment/cancel-booking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ bookingId })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                showFlashMessage('Booking cancelled successfully!', 'success');
-                
-                // Reload the page after a short delay
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } else {
-                showFlashMessage(data.error || 'Failed to cancel booking', 'danger');
-            }
-        } catch (error) {
-            console.error('Error cancelling booking:', error);
-            showFlashMessage('Failed to cancel booking. Please try again.', 'danger');
-        }
-    }
-</script> 
+    <%- include('../includes/footer') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

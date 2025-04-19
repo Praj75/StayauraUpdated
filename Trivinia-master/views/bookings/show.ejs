@@ -1,6 +1,4 @@
-<%- include('../partials/header') %>
-<%- include('../partials/navbar') %>
-
+<% layout('./layouts/boilerplate') %>
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
@@ -13,47 +11,76 @@
                     </span>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h4>Property Details</h4>
-                            <p><strong>Name:</strong> <%= booking.listing.title %></p>
-                            <p><strong>Location:</strong> <%= booking.listing.location %></p>
-                            <% if(booking.listing.images && booking.listing.images.length > 0) { %>
-                                <img src="<%= booking.listing.images[0].url %>" class="img-fluid rounded" alt="Property Image">
-                            <% } %>
-                        </div>
-                        <div class="col-md-6">
-                            <h4>Booking Information</h4>
-                            <p><strong>Booking ID:</strong> <%= booking.bookingId %></p>
-                            <p><strong>Check-in:</strong> <%= new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
-                            <p><strong>Check-out:</strong> <%= new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
-                            <p><strong>Guests:</strong> <%= booking.guests %></p>
-                            <p><strong>Total Amount:</strong> ₹<%= booking.totalAmount.toLocaleString('en-IN') %></p>
-                            <% if(booking.paymentMode) { %>
-                                <p><strong>Payment Mode:</strong> <%= booking.paymentMode.charAt(0).toUpperCase() + booking.paymentMode.slice(1) %></p>
-                            <% } %>
-                            <% if(booking.paymentStatus) { %>
-                                <p><strong>Payment Status:</strong> <%= booking.paymentStatus.charAt(0).toUpperCase() + booking.paymentStatus.slice(1) %></p>
-                            <% } %>
-                            <% if(booking.refundAmount > 0) { %>
-                                <p><strong>Refund Amount:</strong> ₹<%= booking.refundAmount.toLocaleString('en-IN') %></p>
-                            <% } %>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4>Contact Information</h4>
-                            <p><strong>Guest Name:</strong> <%= booking.contact.name %></p>
-                            <p><strong>Email:</strong> <%= booking.contact.email %></p>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <a href="/bookings" class="btn btn-secondary">Back to Bookings</a>
-                        <% if(booking.status === 'confirmed') { %>
-                            <button class="btn btn-danger" onclick="cancelBooking('<%= booking._id %>')">Cancel Booking</button>
+                    <!-- Booking Status Badge -->
+                    <div class="booking-status mb-4">
+                        <% if (booking.status === 'cancelled') { %>
+                            <div class="alert alert-danger">
+                                <h4><i class="fas fa-times-circle"></i> Booking Cancelled</h4>
+                                <% if (booking.paymentStatus === 'refunded') { %>
+                                    <p>Amount Refunded: ₹<%= (booking.totalAmount/100).toLocaleString("en-IN", { maximumFractionDigits: 0 }) %></p>
+                                <% } %>
+                            </div>
+                        <% } else if (booking.status === 'confirmed') { %>
+                            <div class="alert alert-success">
+                                <h4><i class="fas fa-check-circle"></i> Booking Confirmed</h4>
+                                <p>Amount Paid: ₹<%= (booking.totalAmount/100).toLocaleString("en-IN", { maximumFractionDigits: 0 }) %></p>
+                            </div>
                         <% } %>
+                    </div>
+
+                    <!-- Booking Details -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Booking Details</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Check-in:</strong> <%= booking.checkIn.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                                    <p><strong>Check-out:</strong> <%= booking.checkOut.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                                    <p><strong>Number of Guests:</strong> <%= booking.guests %></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Booking ID:</strong> <%= booking.bookingId %></p>
+                                    <p><strong>Payment Status:</strong> 
+                                        <span class="badge <%= booking.paymentStatus === 'paid' ? 'bg-success' : booking.paymentStatus === 'refunded' ? 'bg-warning' : 'bg-secondary' %>">
+                                            <%= booking.paymentStatus.charAt(0).toUpperCase() + booking.paymentStatus.slice(1) %>
+                                        </span>
+                                    </p>
+                                    <p><strong>Total Amount:</strong> ₹<%= (booking.totalAmount/100).toLocaleString("en-IN", { maximumFractionDigits: 0 }) %></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="booking-actions mb-4">
+                        <% if (booking.status !== 'cancelled') { %>
+                            <form action="/bookings/<%= booking._id %>/cancel" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this booking? This action cannot be undone.');">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Cancel Booking
+                                </button>
+                            </form>
+                        <% } %>
+                        
+                        <a href="/bookings" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Bookings
+                        </a>
+                    </div>
+
+                    <!-- Property Details -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Property Details</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <img src="<%= booking.listing.images[0].url %>" class="img-fluid rounded" alt="Property Image">
+                                </div>
+                                <div class="col-md-8">
+                                    <h6><%= booking.listing.title %></h6>
+                                    <p><i class="fas fa-map-marker-alt"></i> <%= booking.listing.location %></p>
+                                    <p class="text-muted"><%= booking.listing.description %></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,4 +146,3 @@ async function cancelBooking(bookingId) {
 }
 </script>
 
-<%- include('../partials/footer') %> 

@@ -284,24 +284,36 @@ router.post('/:id/cancel', isLoggedIn, async (req, res) => {
     try {
         const booking = await Booking.findById(req.params.id)
             .populate('listing')
-            .populate('user')
-            .populate('author');
+            .populate('user');
 
         if (!booking) {
             req.flash('error', 'Booking not found');
             return res.redirect('/bookings');
         }
 
+        // Check if booking is already cancelled
+        if (booking.status === 'cancelled') {
+            req.flash('error', 'This booking is already cancelled');
+            return res.redirect('/bookings');
+        }
+
         // Check if user is authorized to cancel
-        if (booking.user.toString() !== req.user._id.toString() && 
-            booking.author.toString() !== req.user._id.toString()) {
+        if (booking.user._id.toString() !== req.user._id.toString()) {
             req.flash('error', 'You are not authorized to cancel this booking');
             return res.redirect('/bookings');
         }
 
         // Update booking status
         booking.status = 'cancelled';
+        booking.paymentStatus = 'refunded';  // Update payment status
+        booking.cancelledAt = new Date();    // Add cancellation timestamp
         await booking.save();
+
+        // Remove booked dates from listing
+        const listing = await Listing.findById(booking.listing._id);
+        if (listing) {
+            await listing.removeBookedDates(booking._id);
+        }
 
         // Send cancellation emails
         try {
@@ -314,21 +326,22 @@ router.post('/:id/cancel', isLoggedIn, async (req, res) => {
                     Booking ID: ${booking.bookingId}
                     Check-in: ${booking.checkIn.toLocaleDateString()}
                     Check-out: ${booking.checkOut.toLocaleDateString()}
-                    Total Amount: ₹${booking.totalAmount/100}`
+                    Refund Amount: ₹${(booking.totalAmount/100).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`
                 });
             }
 
             // Send email to host
-            if (booking.author && booking.author.email) {
+            const host = await User.findById(booking.listing.owner);
+            if (host && host.email) {
                 await sendEmail({
-                    to: booking.author.email,
+                    to: host.email,
                     subject: 'Booking Cancellation Notification',
                     text: `A booking for ${booking.listing.title} has been cancelled.
                     Booking ID: ${booking.bookingId}
                     Guest: ${booking.user.username}
                     Check-in: ${booking.checkIn.toLocaleDateString()}
                     Check-out: ${booking.checkOut.toLocaleDateString()}
-                    Total Amount: ₹${booking.totalAmount/100}`
+                    Refund Amount: ₹${(booking.totalAmount/100).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`
                 });
             }
         } catch (emailError) {
@@ -336,7 +349,7 @@ router.post('/:id/cancel', isLoggedIn, async (req, res) => {
             // Don't fail the request if email sending fails
         }
 
-        req.flash('success', 'Booking cancelled successfully');
+        req.flash('success', 'Booking cancelled successfully. A refund will be processed.');
         res.redirect('/bookings');
     } catch (error) {
         console.error('Error cancelling booking:', error);
@@ -436,7 +449,7 @@ router.post('/:id/free-dates', isLoggedIn, async (req, res) => {
         }
 
         // Check if user is authorized
-        if (!booking.author.equals(req.user._id) && !booking.listing.owner.equals(req.user._id)) {
+        if (!booking.user.equals(req.user._id) && !booking.listing.owner.equals(req.user._id)) {
             req.flash('error', 'You are not authorized to perform this action');
             return res.redirect('/bookings');
         }

@@ -17,11 +17,29 @@ const viewExists = (viewPath) => {
 
 // Support pages
 router.get('/help-center', (req, res) => {
-    res.render('pages/help-center', { title: 'Help Center' });
+    const pageTitle = 'Help Center';
+    if (viewExists('pages/help-center')) {
+        res.render('pages/help-center', { title: pageTitle });
+    } else {
+        res.render('pages/generic-page', { 
+            title: pageTitle,
+            description: 'Get help with your bookings, account, and more.',
+            lastUpdated: new Date().toISOString()
+        });
+    }
 });
 
 router.get('/safety-information', (req, res) => {
-    res.render('pages/safety-information', { title: 'Safety Information' });
+    const pageTitle = 'Safety Information';
+    if (viewExists('pages/safety-information')) {
+        res.render('pages/safety-information', { title: pageTitle });
+    } else {
+        res.render('pages/generic-page', { 
+            title: pageTitle,
+            description: 'Learn about our safety measures and guidelines.',
+            lastUpdated: new Date().toISOString()
+        });
+    }
 });
 
 router.get('/cancellation-options', (req, res) => {
@@ -31,7 +49,7 @@ router.get('/cancellation-options', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Learn about our cancellation policies and options.',
+            description: 'Understand our cancellation policies and options.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -44,7 +62,7 @@ router.get('/covid-19-response', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Information about our response to COVID-19 and safety measures.',
+            description: 'Learn about our response to the COVID-19 pandemic.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -57,25 +75,34 @@ router.get('/guests-with-disabilities', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Resources and information for guests with disabilities.',
+            description: 'Information about accessibility and accommodations.',
             lastUpdated: new Date().toISOString()
         });
     }
 });
 
 router.get('/report-a-concern', (req, res) => {
-    res.render('pages/report-a-concern', { title: 'Report a Concern' });
+    const pageTitle = 'Report a Concern';
+    if (viewExists('pages/report-a-concern')) {
+        res.render('pages/report-a-concern', { title: pageTitle });
+    } else {
+        res.render('pages/generic-page', { 
+            title: pageTitle,
+            description: 'Report any issues or concerns you may have.',
+            lastUpdated: new Date().toISOString()
+        });
+    }
 });
 
 // Community pages
 router.get('/stayaura-cares', (req, res) => {
-    const pageTitle = 'StayAura Cares';
+    const pageTitle = 'Stayaura Cares';
     if (viewExists('pages/stayaura-cares')) {
         res.render('pages/stayaura-cares', { title: pageTitle });
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Learn about our community initiatives and social impact programs.',
+            description: 'Our commitment to social responsibility.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -88,7 +115,7 @@ router.get('/support-refugees', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Information about our refugee support programs and initiatives.',
+            description: 'How we support refugees and displaced people.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -101,20 +128,20 @@ router.get('/diversity-inclusion', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Our commitment to diversity, equity, and inclusion.',
+            description: 'Our commitment to diversity and inclusion.',
             lastUpdated: new Date().toISOString()
         });
     }
 });
 
 router.get('/anti-discrimination', (req, res) => {
-    const pageTitle = 'Anti-discrimination';
+    const pageTitle = 'Anti-Discrimination';
     if (viewExists('pages/anti-discrimination')) {
         res.render('pages/anti-discrimination', { title: pageTitle });
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Our anti-discrimination policies and commitment to equality.',
+            description: 'Our policies against discrimination.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -128,7 +155,7 @@ router.get('/try-hosting', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Learn how to become a host on StayAura.',
+            description: 'Learn how to become a host.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -141,7 +168,7 @@ router.get('/protection-for-hosts', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Information about our host protection programs and insurance.',
+            description: 'Learn about host protection programs.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -154,7 +181,7 @@ router.get('/explore-resources', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Resources and guides for hosts and guests.',
+            description: 'Resources for hosts.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -167,7 +194,7 @@ router.get('/community-forum', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Connect with other hosts and guests in our community forum.',
+            description: 'Connect with other hosts.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -180,7 +207,7 @@ router.get('/responsible-hosting', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Guidelines and best practices for responsible hosting.',
+            description: 'Guidelines for responsible hosting.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -194,7 +221,7 @@ router.get('/newsroom', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Latest news and updates from StayAura.',
+            description: 'Latest news and updates.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -207,7 +234,7 @@ router.get('/features', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Explore the features that make StayAura unique.',
+            description: 'Explore our platform features.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -220,7 +247,7 @@ router.get('/careers', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Join our team and help shape the future of travel.',
+            description: 'Join our team.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -233,20 +260,20 @@ router.get('/investors', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Information for investors and financial reports.',
+            description: 'Information for investors.',
             lastUpdated: new Date().toISOString()
         });
     }
 });
 
 router.get('/stayaura-luxe', (req, res) => {
-    const pageTitle = 'StayAura Luxe';
+    const pageTitle = 'Stayaura Luxe';
     if (viewExists('pages/stayaura-luxe')) {
         res.render('pages/stayaura-luxe', { title: pageTitle });
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Discover our luxury accommodation offerings.',
+            description: 'Premium accommodations.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -260,7 +287,7 @@ router.get('/privacy', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Our privacy policy and data protection practices.',
+            description: 'Our privacy policy.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -273,7 +300,7 @@ router.get('/terms', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Our terms of service and user agreement.',
+            description: 'Our terms of service.',
             lastUpdated: new Date().toISOString()
         });
     }
@@ -286,7 +313,7 @@ router.get('/sitemap', (req, res) => {
     } else {
         res.render('pages/generic-page', { 
             title: pageTitle,
-            description: 'Navigate all pages and sections of our website.',
+            description: 'Site navigation map.',
             lastUpdated: new Date().toISOString()
         });
     }

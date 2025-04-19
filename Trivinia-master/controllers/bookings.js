@@ -72,7 +72,7 @@ const generateReceipt = async (booking) => {
 const sendConfirmationEmails = async (booking) => {
     try {
         // Get user and host details
-        const user = await User.findById(booking.author);
+        const user = await User.findById(booking.user);
         const host = await User.findById(booking.listing.author);
         const listing = await Listing.findById(booking.listing);
 
@@ -156,7 +156,7 @@ module.exports.createBooking = async (req, res) => {
         // Create booking
         const booking = new Booking({
             listing: listingId,
-            author: req.user._id,
+            user: req.user._id,
             checkIn,
             checkOut,
             guests,
@@ -220,7 +220,7 @@ module.exports.cancelBooking = async (req, res) => {
         
         const booking = await Booking.findById(id)
             .populate('listing')
-            .populate('author');
+            .populate('user');
             
         if (!booking) {
             req.flash('error', 'Booking not found');
@@ -228,7 +228,7 @@ module.exports.cancelBooking = async (req, res) => {
         }
 
         // Check if user is authorized (either the guest or the host)
-        const isGuest = booking.author._id.equals(req.user._id);
+        const isGuest = booking.user._id.equals(req.user._id);
         const isHost = booking.listing.author.equals(req.user._id);
         
         if (!isGuest && !isHost) {
@@ -248,7 +248,7 @@ module.exports.cancelBooking = async (req, res) => {
 
         // Send cancellation emails
         const host = await User.findById(booking.listing.author);
-        const guest = booking.author;
+        const guest = booking.user;
 
         const cancellationEmail = {
             subject: 'Booking Cancellation',

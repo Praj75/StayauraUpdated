@@ -26,7 +26,7 @@ const bookedDatesSchema = new Schema({
 });
 
 const reviewSchema = new Schema({
-    body: String,
+    comment: String,
     rating: Number,
     author: {
         type: Schema.Types.ObjectId,

@@ -36,7 +36,9 @@
     
     <!-- Modern UI Theme -->
     <style>
+        /* Global Styles */
         :root {
+            --navbar-height: 72px;
             --primary-color: #FF385C;
             --primary-dark: #E31C5F;
             --primary-light: #FFE8EC;
@@ -239,17 +241,174 @@
                 width: 95%;
             }
         }
+
+        /* Page Container Spacing */
+        .main-content {
+            padding-top: calc(var(--navbar-height) + 2rem);
+            min-height: calc(100vh - var(--navbar-height));
+        }
+
+        /* Consistent Page Headings */
+        .page-heading {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #E31C5F;
+            border-color: #E31C5F;
+        }
+
+        /* Form Styles */
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .page-heading {
+                font-size: 1.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .main-content {
+                padding-top: calc(var(--navbar-height) + 1rem);
+            }
+        }
+
+        /* Action Buttons Styling */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-edit {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit:hover {
+            background-color: #2980b9;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit i, .btn-delete i {
+            font-size: 1rem;
+        }
+
+        /* Card Action Area */
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        /* Form Button Styling */
+        .form-inline {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .form-inline button {
+            margin: 0;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .card-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .btn-edit, .btn-delete {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
     
     
     <%- include('../includes/navbar') %>
     
-    <main class="container mt-4 flex-grow-1">
+    <main class="main-content">
         <%- include('../includes/flash') %>
         <%- body %>
     </main>
     
     <%- include('../includes/footer') %>
+    <%- include('../includes/chatbot') %>
     
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -257,6 +416,7 @@
     <!-- Custom JavaScript -->
     <script src="/js/main.js"></script>
     <script src="/js/flash.js"></script>
+    <script src="/js/chatbot.js"></script>
     
     <!-- CSRF Token -->
     
